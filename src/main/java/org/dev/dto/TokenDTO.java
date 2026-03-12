@@ -1,13 +1,24 @@
 package org.dev.dto;
 
 public class TokenDTO {
-    public String getToken() {
-        return token;
+
+private String AccessToken;
+
+    public String getAccessToken() {
+        return AccessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAccessToken(String accessToken) {
+        AccessToken = accessToken;
     }
 
-    private String token;
+    public String getRequestToken() {
+        return RequestToken;
+    }
+
+    public void setRequestToken(String requestToken) {
+        RequestToken = requestToken;
+    }
+
+    private String RequestToken;
 }
