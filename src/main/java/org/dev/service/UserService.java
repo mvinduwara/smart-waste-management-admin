@@ -17,7 +17,7 @@ public class UserService {
     public Response validateUser(LoggingRequestDTO loggingRequestDTO) {
 
         Session hibernatesession = HibernateUtil.getSessionFactory().openSession();
-        User user = hibernatesession.createQuery("FROM User u WHERE u.email : email AND u.password:password", User.class)
+        User user = hibernatesession.createQuery("FROM User u WHERE u.email = :email AND u.password=:password", User.class)
                 .setParameter("email", loggingRequestDTO.getEmail())
                 .setParameter("password", loggingRequestDTO.getPassword())
                 .getSingleResultOrNull();

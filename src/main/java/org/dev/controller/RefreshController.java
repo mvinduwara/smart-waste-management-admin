@@ -6,7 +6,7 @@ import jakarta.ws.rs.core.Response;
 import org.dev.dto.TokenDTO;
 import org.dev.util.JWTUtil;
 
-@Path("/refresh")
+@Path("/auth/refresh")
 public class RefreshController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

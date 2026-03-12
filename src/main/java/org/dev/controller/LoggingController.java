@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 import org.dev.dto.LoggingRequestDTO;
 import org.dev.service.UserService;
 
-@Path("/login")
+@Path("/auth/login")
 public class LoggingController {
 
     @POST

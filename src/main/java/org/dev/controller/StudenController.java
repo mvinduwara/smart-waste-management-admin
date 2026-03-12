@@ -2,6 +2,7 @@ package org.dev.controller;
 
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Path("/students")
 public class StudenController {
+    @GET
     @Path("/get-all")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
