@@ -24,4 +24,13 @@ public class JWTUtil {
                 .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
                 .compact();
     }
+
+    public static String validateToken(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(SECRET.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();    /// email
+    }
 }
