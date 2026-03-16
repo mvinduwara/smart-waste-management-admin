@@ -15,5 +15,10 @@
     <property name="hibernate.show_sql">true</property>
 
     <mapping class="org.dev.entity.User"/>
+    <mapping class="org.dev.entity.Driver"/>
+    <mapping class="org.dev.entity.VerificationStatus"/>
+    <mapping class="org.dev.entity.WastePricing"/>
+    <mapping class="org.dev.entity.PickupRequest"/>
+    <mapping class="org.dev.entity.Transaction"/>
   </session-factory>
 </hibernate-configuration>

@@ -1,7 +1,6 @@
 package org.dev.entity;
 
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
 @Entity
@@ -21,16 +20,16 @@ public class Driver implements Serializable {
     @Column(length = 45, nullable = false, unique = true)
     private String contact;
 
-    @Column(length = 45, nullable = false, unique = true)
-    private String liscense_no;
+    @Column(name = "license_number", length = 10)
+    private String license_number;
 
-    @Column(length = 45, nullable = false, unique = true)
-    private String vehicle_type;
-
-    @Column(length = 45, nullable = false, unique = true)
+    @Column(name = "vehicle_reg_no", length = 45)
     private String vehicle_reg_no;
 
+    @Column(name = "vehicle_type", length = 45)
+    private String vehicle_type;
+
     @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    private String verification_status;
+    @JoinColumn(name = "verification_status_id")
+    private VerificationStatus verificationStatus;
 }

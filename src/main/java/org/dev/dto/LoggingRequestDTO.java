@@ -9,7 +9,7 @@ public class LoggingRequestDTO {
         return username;
     }
 
-    public void setEmail(String email) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
