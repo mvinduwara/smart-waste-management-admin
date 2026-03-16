@@ -7,7 +7,7 @@
     <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
     <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
     <property name="hibernate.connection.url">
-      jdbc:mysql://localhost:3306/smart_waste?allowPublicKeyRetrieval=true&amp;useSSL=false
+      jdbc:mysql://localhost:3306/eco_cycle?allowPublicKeyRetrieval=true&amp;useSSL=false
     </property>
     <property name="hibernate.connection.username">root</property>
     <property name="hibernate.connection.password">Manilka@8576</property>

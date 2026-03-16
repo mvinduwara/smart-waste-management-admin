@@ -6,6 +6,7 @@ public class AppConfig extends ResourceConfig {
 
    public AppConfig() {
        packages("org.dev.controller");
+       packages("org.dev.middleware");  
     }
 
 }
