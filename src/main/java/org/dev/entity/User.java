@@ -12,18 +12,32 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 150, nullable = false,unique = true)
+    @Column(length = 45, nullable = false, unique = true)
+    private String username;
+
+    @Column(length = 45, nullable = false, unique = true)
     private String email;
 
-    @Column(length = 15, nullable = false,unique = true)
+    @Column(length = 45, nullable = false, unique = true)
     private String password;
 
-    public String getPassword() {
-        return password;
+    @Column(length = 10, nullable = false, unique = true)
+    private String contact;
+
+    public int getId() {
+        return id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -34,11 +48,21 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+
 }

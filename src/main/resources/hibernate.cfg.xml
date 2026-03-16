@@ -15,6 +15,5 @@
     <property name="hibernate.show_sql">true</property>
 
     <mapping class="org.dev.entity.User"/>
-    <mapping class="org.dev.entity.Student"/>
   </session-factory>
 </hibernate-configuration>
