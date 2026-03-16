@@ -1,15 +1,14 @@
-package org.dev;
+package org.dev.client;
 
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.Context;
-import jakarta.servlet.Servlet;
 import org.dev.config.AppConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.apache.catalina.LifecycleException;
 
 import java.io.File;
 
-public class Main {
+public class RetrofitClient {
 
     private static final String API_PATH = "/api/v1";
     private static final int SERVER_PORT = 8080;
@@ -17,7 +16,7 @@ public class Main {
     public static void main(String[] args) {
 
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(Main.SERVER_PORT);
+        tomcat.setPort(RetrofitClient.SERVER_PORT);
         tomcat.getConnector();
 
         Context context = tomcat.addWebapp("/", new File("src/main/WebApp").getAbsolutePath());
