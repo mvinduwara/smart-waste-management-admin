@@ -18,7 +18,7 @@ public class UserService {
 
         Session hibernatesession = HibernateUtil.getSessionFactory().openSession();
         User user = hibernatesession.createQuery("FROM User u WHERE u.email = :email AND u.password=:password", User.class)
-                .setParameter("email", loggingRequestDTO.getEmail())
+                .setParameter("username", loggingRequestDTO.getUsername())
                 .setParameter("password", loggingRequestDTO.getPassword())
                 .getSingleResultOrNull();
         hibernatesession.close();
