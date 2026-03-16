@@ -12,7 +12,7 @@ public class Driver implements Serializable {
     private int id;
 
     @Column(length = 45, nullable = false, unique = true)
-    private String driver_username;
+    private String username;
 
     @Column(length = 45, nullable = false, unique = true)
     private String password;
