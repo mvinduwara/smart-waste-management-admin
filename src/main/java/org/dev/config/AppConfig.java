@@ -8,5 +8,4 @@ public class AppConfig extends ResourceConfig {
        packages("org.dev.controller");
        packages("org.dev.middleware");  
     }
-
 }
