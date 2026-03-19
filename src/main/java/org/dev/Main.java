@@ -10,7 +10,7 @@ import java.io.File;
 
 public class Main {
 
-    private static final String API_PATH = "/api/v1";
+    private static final String API_PATH = "/api";
     private static final int SERVER_PORT = 8080;
 
     public static void main(String[] args) {
@@ -29,6 +29,5 @@ public class Main {
         } catch (LifecycleException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
