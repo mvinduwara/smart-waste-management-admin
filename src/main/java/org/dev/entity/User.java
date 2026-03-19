@@ -24,6 +24,8 @@ public class User implements Serializable {
     @Column(length = 10, nullable = false, unique = true)
     private String contact;
 
+
+
     public int getId() {
         return id;
     }
