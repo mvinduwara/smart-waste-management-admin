@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User implements Serializable {
 
     @Id
@@ -18,12 +18,11 @@ public class User implements Serializable {
     @Column(length = 45, nullable = false, unique = true)
     private String email;
 
-    @Column(length = 45, nullable = false, unique = true)
+    @Column(length = 200, nullable = false, unique = true)
     private String password;
 
     @Column(length = 10, nullable = false, unique = true)
     private String contact;
-
 
 
     public int getId() {
@@ -65,6 +64,4 @@ public class User implements Serializable {
     public void setContact(String contact) {
         this.contact = contact;
     }
-
-
 }

@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "drivers")
+@Table(name = "driver")
 public class Driver implements Serializable {
 
     @Id
@@ -14,7 +14,7 @@ public class Driver implements Serializable {
     @Column(length = 45, nullable = false, unique = true)
     private String username;
 
-    @Column(length = 45, nullable = false, unique = true)
+    @Column(length = 200, nullable = false, unique = true)
     private String password;
 
     @Column(length = 45, nullable = false, unique = true)
