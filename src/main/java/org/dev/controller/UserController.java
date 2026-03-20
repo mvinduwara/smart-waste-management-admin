@@ -15,11 +15,11 @@ public class UserController {
     private final UserService userService = new UserService();
 
     // API Endpoint: PUT http://localhost:8080/api/user/profile/{id}
-    @PUT
-    @Path("/profile/{id}")
-    public Response updateProfile(@PathParam("id") int userId, User updatedData) {
-        return userService.updateProfile(userId, updatedData);
-    }
+//    @PUT
+//    @Path("/profile/{id}")
+//    public Response updateProfile(@PathParam("id") int userId, User updatedData) {
+//        return userService.updateProfile(userId, updatedData);
+//    }
 
     @GET
     @Path("/profile/{id}")
