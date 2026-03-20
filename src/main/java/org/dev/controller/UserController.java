@@ -23,7 +23,7 @@ public class UserController {
 
     @GET
     @Path("/profile/{id}")
-    public Response getUser(@PathParam("id") int userId) {
-        return userService.getUserById(userId);
+    public Response getUserProfile(@PathParam("id") int userId) {
+        return userService.getUserProfile(userId);
     }
 }

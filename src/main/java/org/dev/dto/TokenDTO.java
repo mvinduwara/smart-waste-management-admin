@@ -2,7 +2,9 @@ package org.dev.dto;
 
 public class TokenDTO {
 
-private String AccessToken;
+    private String AccessToken;
+    private String RequestToken;
+    private int userId;
 
     public String getAccessToken() {
         return AccessToken;
@@ -20,5 +22,11 @@ private String AccessToken;
         RequestToken = requestToken;
     }
 
-    private String RequestToken;
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 }

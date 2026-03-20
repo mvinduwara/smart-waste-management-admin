@@ -79,6 +79,7 @@ public class UserService {
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setAccessToken(JWTUtil.generateToken(user.getEmail()));
             tokenDTO.setRequestToken(JWTUtil.generateToken(user.getEmail() + "_refresh"));
+            tokenDTO.setUserId(user.getId());
 
             return Response.status(Response.Status.OK).entity(tokenDTO).build();
         } finally {
@@ -121,13 +122,14 @@ public class UserService {
     }
 
     // User Data View Logic
-    public Response getUserById(int userId) {
+    public Response getUserProfile(int userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             User user = session.find(User.class, userId);
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
             }
+
             user.setPassword(null);
             return Response.status(Response.Status.OK).entity(user).build();
         } finally {
