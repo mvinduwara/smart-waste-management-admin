@@ -84,39 +84,36 @@ public class DriverService {
         }
     }
 
+    // 2. FETCH PROFILE
+    public Response getDriverProfile(int driverId) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Driver driver = session.find(Driver.class, driverId);
+            if (driver == null) return Response.status(404).build();
+            driver.setPassword(null); // Safety
+            return Response.ok(driver).build();
+        }
+    }
+
     // 3. PROFILE UPDATE LOGIC
-    public Response updateProfile(int driverId, Driver updatedData) {
+    public Response updateProfile(int id, Driver updated) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = null;
-
+        Transaction tx = null;
         try {
-            transaction = session.beginTransaction();
-            Driver existingDriver = session.find(Driver.class, driverId);
+            tx = session.beginTransaction();
+            Driver existing = session.find(Driver.class, id);
+            if (existing == null) return Response.status(404).build();
 
-            if (existingDriver == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
-            }
+            existing.setContact(updated.getContact());
+            existing.setVehicle_type(updated.getVehicle_type());
+            existing.setVehicle_reg_no(updated.getVehicle_reg_no());
+            existing.setLicense_number(updated.getLicense_number());
 
-            // Update allowed fields
-            existingDriver.setUsername(updatedData.getUsername());
-            existingDriver.setContact(updatedData.getContact());
-            existingDriver.setVehicle_type(updatedData.getVehicle_type());
-            existingDriver.setVehicle_reg_no(updatedData.getVehicle_reg_no());
-            existingDriver.setLicense_number(updatedData.getLicense_number());
-
-            // Only update password if a new one is provided
-            if (updatedData.getPassword() != null && !updatedData.getPassword().isEmpty()) {
-                existingDriver.setPassword(BCrypt.hashpw(updatedData.getPassword(), BCrypt.gensalt()));
-            }
-
-            session.merge(existingDriver);
-            transaction.commit();
-
-            return Response.status(Response.Status.OK).entity("Driver profile updated successfully").build();
-
+            session.merge(existing);
+            tx.commit();
+            return Response.ok("Updated").build();
         } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Update failed").build();
+            if (tx != null) tx.rollback();
+            return Response.status(500).build();
         } finally {
             session.close();
         }

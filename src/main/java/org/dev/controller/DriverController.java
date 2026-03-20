@@ -1,10 +1,6 @@
 package org.dev.controller;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -17,11 +13,17 @@ import org.dev.service.DriverService;
 public class DriverController {
 
     private final DriverService driverService = new DriverService();
-
     // API Endpoint: PUT http://localhost:8080/api/driver/profile/{id}
+
+    @GET
+    @Path("/profile/{id}")
+    public Response getProfile(@PathParam("id") int id) {
+        return driverService.getDriverProfile(id);
+    }
+
     @PUT
     @Path("/profile/{id}")
-    public Response updateProfile(@PathParam("id") int driverId, Driver updatedData) {
-        return driverService.updateProfile(driverId, updatedData);
+    public Response updateProfile(@PathParam("id") int id, Driver data) {
+        return driverService.updateProfile(id, data);
     }
 }
