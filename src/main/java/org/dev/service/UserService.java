@@ -33,6 +33,14 @@ public class UserService {
                 return Response.status(Response.Status.CONFLICT).entity("Email already exists").build();
             }
 
+            Long contactCount = session.createQuery("SELECT COUNT(u) FROM User u WHERE u.contact = :contact", Long.class)
+                    .setParameter("contact", newUser.getContact())
+                    .uniqueResult();
+
+            if (contactCount > 0) {
+                return Response.status(Response.Status.CONFLICT).entity("Contact number already exists").build();
+            }
+
             // Hash the password before saving
             String hashedPassword = BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt());
             newUser.setPassword(hashedPassword);
