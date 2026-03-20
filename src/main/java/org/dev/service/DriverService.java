@@ -62,21 +62,23 @@ public class DriverService {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            // Find driver by CONTACT NUMBER
-            // Note: We use loggingRequestDTO.getUsername() because that is the field name in your JSON/DTO
-            Driver driver = session.createQuery("FROM Driver d WHERE d.contact = :contact", Driver.class)
-                    .setParameter("contact", loggingRequestDTO.getUsername())
-                    .uniqueResultOptional().orElse(null);
+            // We use loggingRequestDTO.getUsername() because that is the field name in your JSON/DTO
+            Driver driver = session.createQuery(
+                            "FROM Driver d WHERE d.username = :user OR d.contact = :user", Driver.class)
+                    .setParameter("user", loggingRequestDTO.getUsername())
+                    .uniqueResultOptional()
+                    .orElse(null);
 
-            // Check if driver exists AND password matches the hashed version
+            // Check if driver exists
             if (driver == null || !BCrypt.checkpw(loggingRequestDTO.getPassword(), driver.getPassword())) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid contact number or password").build();
             }
 
-            // Generate JWT Tokens using the CONTACT NUMBER
+            // Generate JWT Token
             TokenDTO tokenDTO = new TokenDTO();
-            tokenDTO.setAccessToken(JWTUtil.generateToken(driver.getContact()));
+            tokenDTO.setAccessToken(JWTUtil.generateToken(driver.getUsername()));
             tokenDTO.setRequestToken(JWTUtil.generateToken(driver.getContact() + "_refresh"));
+            tokenDTO.setId(driver.getId());
 
             return Response.status(Response.Status.OK).entity(tokenDTO).build();
         } finally {
@@ -89,7 +91,7 @@ public class DriverService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Driver driver = session.find(Driver.class, driverId);
             if (driver == null) return Response.status(404).build();
-            driver.setPassword(null); // Safety
+            driver.setPassword(null);
             return Response.ok(driver).build();
         }
     }

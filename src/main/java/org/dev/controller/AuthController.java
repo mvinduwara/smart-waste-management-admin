@@ -18,7 +18,6 @@ import org.dev.service.DriverService;
 @Produces(MediaType.APPLICATION_JSON)
 public class AuthController {
 
-    // Instantiate the service we just built
     private final UserService userService = new UserService();
     private final DriverService driverService = new DriverService();
 
@@ -26,15 +25,12 @@ public class AuthController {
     @POST
     @Path("/register")
     public Response register(User newUser) {
-        // Passes the incoming JSON (mapped to User object) to the service
         return userService.registerUser(newUser);
     }
 
-    // API Endpoint: POST http://localhost:8080/api/auth/login
     @POST
     @Path("/login")
     public Response login(LoggingRequestDTO loginRequest) {
-        // Passes the incoming username/password to the service
         return userService.validateUser(loginRequest);
     }
 
