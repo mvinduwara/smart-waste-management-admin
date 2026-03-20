@@ -4,7 +4,7 @@ public class TokenDTO {
 
     private String AccessToken;
     private String RequestToken;
-    private int userId;
+    private int id;
 
     public String getAccessToken() {
         return AccessToken;
@@ -22,11 +22,11 @@ public class TokenDTO {
         RequestToken = requestToken;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(int id) {
+        this.id = id;
     }
 }

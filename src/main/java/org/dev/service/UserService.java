@@ -66,7 +66,7 @@ public class UserService {
 
         try {
             // Find user by username or email
-            User user = session.createQuery("FROM User u WHERE u.username = :username OR u.email = :username", User.class)
+            User user = session.createQuery("FROM User u WHERE u.username = :username", User.class)
                     .setParameter("username", loggingRequestDTO.getUsername())
                     .uniqueResultOptional().orElse(null);
 
@@ -79,8 +79,7 @@ public class UserService {
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setAccessToken(JWTUtil.generateToken(user.getEmail()));
             tokenDTO.setRequestToken(JWTUtil.generateToken(user.getEmail() + "_refresh"));
-            tokenDTO.setUserId(user.getId());
-
+            tokenDTO.setId(user.getId()); // <--- ADD THIS LINE
             return Response.status(Response.Status.OK).entity(tokenDTO).build();
         } finally {
             session.close();
