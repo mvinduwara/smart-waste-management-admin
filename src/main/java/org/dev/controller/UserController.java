@@ -1,10 +1,6 @@
 package org.dev.controller;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -23,5 +19,11 @@ public class UserController {
     @Path("/profile/{id}")
     public Response updateProfile(@PathParam("id") int userId, User updatedData) {
         return userService.updateProfile(userId, updatedData);
+    }
+
+    @GET
+    @Path("/profile/{id}")
+    public Response getUser(@PathParam("id") int userId) {
+        return userService.getUserById(userId);
     }
 }
