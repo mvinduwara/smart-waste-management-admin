@@ -69,12 +69,10 @@ public class DriverService {
                     .uniqueResultOptional()
                     .orElse(null);
 
-            // Check if driver exists
             if (driver == null || !BCrypt.checkpw(loggingRequestDTO.getPassword(), driver.getPassword())) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid contact number or password").build();
             }
 
-            // Generate JWT Token
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setAccessToken(JWTUtil.generateToken(driver.getUsername()));
             tokenDTO.setRequestToken(JWTUtil.generateToken(driver.getContact() + "_refresh"));

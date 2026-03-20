@@ -19,17 +19,18 @@ public class JWTFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
 
         String path = containerRequestContext.getUriInfo().getPath();
-        if(path.startsWith("auth")){
+        if (path.startsWith("auth")) {
             return;
         }
 
         String authHeader = containerRequestContext.getHeaderString(AUTHORIZATION);
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             return;
         }
+
         String token = authHeader.substring("Bearer ".length());
-        try{
+        try {
             JWTUtil.validateToken(token);
         } catch (Exception e) {
             containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());

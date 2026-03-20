@@ -15,15 +15,15 @@ public class DriverController {
     private final DriverService driverService = new DriverService();
     // API Endpoint: PUT http://localhost:8080/api/driver/profile/{id}
 
-    @GET
-    @Path("/profile/{id}")
-    public Response getProfile(@PathParam("id") int id) {
-        return driverService.getDriverProfile(id);
-    }
-
     @PUT
     @Path("/profile/{id}")
     public Response updateProfile(@PathParam("id") int id, Driver data) {
         return driverService.updateProfile(id, data);
+    }
+
+    @GET
+    @Path("/profile/{id}")
+    public Response getProfile(@PathParam("id") int id) {
+        return driverService.getDriverProfile(id);
     }
 }
