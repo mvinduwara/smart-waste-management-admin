@@ -10,8 +10,11 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PickupService {
+
     public Response createPickupRequest(PickupRequestDTO dto) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -64,6 +67,31 @@ public class PickupService {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to create request").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    public Response getRequestsByUser(int userId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<PickupRequest> requests = session.createQuery(
+                            "FROM PickupRequest p WHERE p.user.id = :uid ORDER BY p.id DESC", PickupRequest.class)
+                    .setParameter("uid", userId)
+                    .getResultList();
+
+            List<PickupRequestDTO> dtoList = new ArrayList<>();
+            for (PickupRequest r : requests) {
+                PickupRequestDTO dto = new PickupRequestDTO();
+                dto.setId(r.getId());
+                dto.setWasteType(r.getWaste_type());
+                dto.setWeight(r.getTotal_weight());
+                dto.setEstimatedValue(r.getEstimated_value());
+                dto.setStatus(r.getStatus());
+                dto.setCreatedAt(r.getCreated_at() != null ? r.getCreated_at().toString() : "");
+                dtoList.add(dto);
+            }
+            return Response.status(Response.Status.OK).entity(dtoList).build();
         } finally {
             session.close();
         }
