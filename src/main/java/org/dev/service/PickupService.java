@@ -248,4 +248,34 @@ public class PickupService {
             session.close();
         }
     }
+
+    //Arrive To Location
+    public Response completePickupRequest(int requestId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+
+            PickupRequest request = session.find(PickupRequest.class, requestId);
+            if (request == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+            }
+
+            // Change status to COMPLETED
+            request.setStatus("COMPLETED");
+
+            session.merge(request);
+            transaction.commit();
+
+            return Response.status(Response.Status.OK).entity("Job successfully completed!").build();
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to complete job").build();
+        } finally {
+            session.close();
+        }
+    }
 }

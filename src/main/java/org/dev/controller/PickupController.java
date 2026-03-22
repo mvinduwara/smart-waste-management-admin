@@ -51,4 +51,10 @@ public class PickupController {
     public Response getActiveDriverRequest(@PathParam("driverId") int driverId) {
         return pickupService.getActiveDriverRequest(driverId);
     }
+
+    @PUT
+    @Path("/complete/{requestId}")
+    public Response completeJob(@PathParam("requestId") int requestId) {
+        return pickupService.completePickupRequest(requestId);
+    }
 }
