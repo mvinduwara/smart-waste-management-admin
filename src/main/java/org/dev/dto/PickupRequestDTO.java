@@ -1,6 +1,9 @@
 package org.dev.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PickupRequestDTO {
+    private int id;
     private int userId;
     private String wasteType;
     private String weight;
@@ -9,6 +12,9 @@ public class PickupRequestDTO {
     private Double latitude;
     private Double longitude;
     private String imageBase64;
+    private String status;
+    private String createdAt;
+    private String estimatedValue;
 
     public int getUserId() {
         return userId;
@@ -72,5 +78,37 @@ public class PickupRequestDTO {
 
     public void setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getEstimatedValue() {
+        return estimatedValue;
+    }
+
+    public void setEstimatedValue(String estimatedValue) {
+        this.estimatedValue = estimatedValue;
     }
 }
