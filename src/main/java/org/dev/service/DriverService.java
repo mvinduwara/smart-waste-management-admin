@@ -118,4 +118,26 @@ public class DriverService {
             session.close();
         }
     }
+
+    //MESSAGE TOKEN
+    public Response updateFcmToken(int driverId, String fcmToken) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            Driver driver = session.get(Driver.class, driverId);
+            if (driver != null) {
+                driver.setFcm_token(fcmToken);
+                session.merge(driver);
+                transaction.commit();
+                return Response.ok("Token updated").build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            return Response.serverError().entity("Error updating token").build();
+        } finally {
+            session.close();
+        }
+    }
 }
