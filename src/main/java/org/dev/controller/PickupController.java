@@ -21,10 +21,10 @@ public class PickupController {
     public Response createPickupRequest(PickupRequestDTO dto) {
         return pickupService.createPickupRequest(dto);
     }
-
+    
     @GET
-    @Path("/user/{userId}")
-    public Response getUserRequests(@PathParam("userId") int userId) {
-        return pickupService.getRequestsByUser(userId);
+    @Path("/active/{userId}")
+    public Response getActiveUserRequest(@PathParam("userId") int userId) {
+        return pickupService.getActiveRequestByUser(userId);
     }
 }
