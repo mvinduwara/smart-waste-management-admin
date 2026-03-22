@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 public class PickupService {
 
+    //Create request
     public Response createPickupRequest(PickupRequestDTO dto) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -70,7 +71,7 @@ public class PickupService {
         }
     }
 
-    // Add this method inside PickupService class
+    //Get Active Requset Data
     public Response getActiveRequestByUser(int userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -108,6 +109,38 @@ public class PickupService {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching active request").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    //Cancel Requset
+    public Response cancelPickupRequest(int requestId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            PickupRequest request = session.find(PickupRequest.class, requestId);
+
+            if (request == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+            }
+
+            if (!"PENDING".equals(request.getStatus())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Cannot cancel request because it is already " + request.getStatus()).build();
+            }
+
+            request.setStatus("CANCELLED");
+            session.merge(request);
+            transaction.commit();
+
+            return Response.status(Response.Status.OK).entity("Request cancelled successfully").build();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to cancel request").build();
         } finally {
             session.close();
         }
