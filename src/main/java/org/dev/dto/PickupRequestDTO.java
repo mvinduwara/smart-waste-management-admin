@@ -15,6 +15,10 @@ public class PickupRequestDTO {
     private String status;
     private String createdAt;
     private String estimatedValue;
+    private String driverName;
+    private String driverVehicle;
+    private String vehicleInfo;
+    private String driverContact;
 
     public int getUserId() {
         return userId;
@@ -110,5 +114,37 @@ public class PickupRequestDTO {
 
     public void setEstimatedValue(String estimatedValue) {
         this.estimatedValue = estimatedValue;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    public String getDriverVehicle() {
+        return driverVehicle;
+    }
+
+    public void setDriverVehicle(String driverVehicle) {
+        this.driverVehicle = driverVehicle;
+    }
+
+    public String getVehicleInfo() {
+        return vehicleInfo;
+    }
+
+    public void setVehicleInfo(String vehicleInfo) {
+        this.vehicleInfo = vehicleInfo;
+    }
+
+    public String getDriverContact() {
+        return driverContact;
+    }
+
+    public void setDriverContact(String driverContact) {
+        this.driverContact = driverContact;
     }
 }

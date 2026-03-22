@@ -10,8 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PickupService {
 
@@ -72,26 +70,44 @@ public class PickupService {
         }
     }
 
-    public Response getRequestsByUser(int userId) {
+    // Add this method inside PickupService class
+    public Response getActiveRequestByUser(int userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            List<PickupRequest> requests = session.createQuery(
-                            "FROM PickupRequest p WHERE p.user.id = :uid ORDER BY p.id DESC", PickupRequest.class)
+            // Find the most recent active request (e.g., ACCEPTED or EN_ROUTE)
+            PickupRequest request = session.createQuery(
+                            "FROM PickupRequest p WHERE p.user.id = :uid AND p.status IN ('ACCEPTED', 'EN_ROUTE') ORDER BY p.id DESC", PickupRequest.class)
                     .setParameter("uid", userId)
-                    .getResultList();
+                    .setMaxResults(1)
+                    .uniqueResultOptional().orElse(null);
 
-            List<PickupRequestDTO> dtoList = new ArrayList<>();
-            for (PickupRequest r : requests) {
-                PickupRequestDTO dto = new PickupRequestDTO();
-                dto.setId(r.getId());
-                dto.setWasteType(r.getWaste_type());
-                dto.setWeight(r.getTotal_weight());
-                dto.setEstimatedValue(r.getEstimated_value());
-                dto.setStatus(r.getStatus());
-                dto.setCreatedAt(r.getCreated_at() != null ? r.getCreated_at().toString() : "");
-                dtoList.add(dto);
+            if (request == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No active requests found").build();
             }
-            return Response.status(Response.Status.OK).entity(dtoList).build();
+
+            PickupRequestDTO dto = new PickupRequestDTO();
+            dto.setId(request.getId());
+            dto.setWasteType(request.getWaste_type());
+            dto.setStatus(request.getStatus());
+            dto.setLatitude(request.getLatitude());
+            dto.setLongitude(request.getLongitude());
+
+            // If a driver is assigned, pass their details
+            if (request.getDriver() != null) {
+                dto.setDriverName(request.getDriver().getUsername());
+                dto.setDriverContact(request.getDriver().getContact());
+
+                String vehicle = request.getDriver().getVehicle_type() + " - " + request.getDriver().getVehicle_reg_no();
+                dto.setVehicleInfo(vehicle);
+            } else {
+                dto.setDriverName("Pending Assignment");
+                dto.setVehicleInfo("N/A");
+            }
+
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching active request").build();
         } finally {
             session.close();
         }
