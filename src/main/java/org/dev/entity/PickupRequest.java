@@ -39,7 +39,6 @@ public class PickupRequest implements Serializable {
     private Double latitude;
     private Double longitude;
 
-    // Storing the captured Android image as a Base64 string
     @Column(columnDefinition = "LONGTEXT",nullable = true)
     private String image_base64;
 
