@@ -33,4 +33,16 @@ public class PickupController {
     public Response cancelRequest(@PathParam("requestId") int requestId) {
         return pickupService.cancelPickupRequest(requestId);
     }
+
+    @GET
+    @Path("/available")
+    public Response getAvailableRequests() {
+        return pickupService.getAvailableRequests();
+    }
+    
+    @PUT
+    @Path("/accept/{requestId}/{driverId}")
+    public Response acceptJob(@PathParam("requestId") int requestId, @PathParam("driverId") int driverId) {
+        return pickupService.acceptPickupRequest(requestId, driverId);
+    }
 }

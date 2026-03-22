@@ -2,6 +2,7 @@ package org.dev.service;
 
 import jakarta.ws.rs.core.Response;
 import org.dev.dto.PickupRequestDTO;
+import org.dev.entity.Driver;
 import org.dev.entity.PickupRequest;
 import org.dev.entity.User;
 import org.dev.entity.WastePricing;
@@ -10,6 +11,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PickupService {
 
@@ -145,4 +148,90 @@ public class PickupService {
             session.close();
         }
     }
+
+    //Available Checkings
+    public Response getAvailableRequests() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<PickupRequest> requests = session.createQuery(
+                            "FROM PickupRequest p WHERE p.status = 'PENDING' ORDER BY p.id DESC", PickupRequest.class)
+                    .getResultList();
+
+            List<PickupRequestDTO> dtoList = new ArrayList<>();
+            for (PickupRequest request : requests) {
+                PickupRequestDTO dto = new PickupRequestDTO();
+                dto.setId(request.getId());
+
+                if (request.getUser() != null) {
+                    dto.setUserId(request.getUser().getId());
+                }
+
+                dto.setWasteType(request.getWaste_type());
+                dto.setWeight(request.getTotal_weight());
+                dto.setAddress(request.getAddress());
+                dto.setNotes(request.getNotes());
+                dto.setLatitude(request.getLatitude());
+                dto.setLongitude(request.getLongitude());
+                dto.setStatus(request.getStatus());
+
+                if (request.getCreated_at() != null) {
+                    dto.setCreatedAt(request.getCreated_at().toString());
+                }
+                if (request.getEstimated_value() != null) {
+                    dto.setEstimatedValue(request.getEstimated_value().toString());
+                }
+
+                dtoList.add(dto);
+            }
+
+            return Response.status(Response.Status.OK).entity(dtoList).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error fetching available requests").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    //Accept Request
+    public Response acceptPickupRequest(int requestId, int driverId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+
+            PickupRequest request = session.find(PickupRequest.class, requestId);
+            if (request == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+            }
+
+            if (!"PENDING".equals(request.getStatus())) {
+                return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Sorry, this job is no longer available.").build();
+            }
+
+            Driver driver = session.find(Driver.class, driverId);
+            if (driver == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
+            }
+
+            request.setDriver(driver);
+            request.setStatus("ACCEPTED");
+
+            session.merge(request);
+            transaction.commit();
+
+            return Response.status(Response.Status.OK).entity("Job accepted successfully!").build();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to accept job").build();
+        } finally {
+            session.close();
+        }
+    }
+
+
 }
