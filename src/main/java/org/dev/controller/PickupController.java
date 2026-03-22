@@ -39,10 +39,16 @@ public class PickupController {
     public Response getAvailableRequests() {
         return pickupService.getAvailableRequests();
     }
-    
+
     @PUT
     @Path("/accept/{requestId}/{driverId}")
     public Response acceptJob(@PathParam("requestId") int requestId, @PathParam("driverId") int driverId) {
         return pickupService.acceptPickupRequest(requestId, driverId);
+    }
+
+    @GET
+    @Path("/driver/active/{driverId}")
+    public Response getActiveDriverRequest(@PathParam("driverId") int driverId) {
+        return pickupService.getActiveDriverRequest(driverId);
     }
 }

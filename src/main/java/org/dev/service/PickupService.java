@@ -31,9 +31,7 @@ public class PickupService {
             }
 
             // 2. Calculate Estimated Price
-            WastePricing pricing = session.createQuery("FROM WastePricing w WHERE w.material_type = :type", WastePricing.class)
-                    .setParameter("type", dto.getWasteType())
-                    .uniqueResultOptional().orElse(null);
+            WastePricing pricing = session.createQuery("FROM WastePricing w WHERE w.material_type = :type", WastePricing.class).setParameter("type", dto.getWasteType()).uniqueResultOptional().orElse(null);
 
             double estimatedValue = 0.0;
             if (pricing != null) {
@@ -79,11 +77,7 @@ public class PickupService {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             // Find the most recent active request (e.g., ACCEPTED or EN_ROUTE)
-            PickupRequest request = session.createQuery(
-                            "FROM PickupRequest p WHERE p.user.id = :uid AND p.status IN ('ACCEPTED', 'EN_ROUTE') ORDER BY p.id DESC", PickupRequest.class)
-                    .setParameter("uid", userId)
-                    .setMaxResults(1)
-                    .uniqueResultOptional().orElse(null);
+            PickupRequest request = session.createQuery("FROM PickupRequest p WHERE p.user.id = :uid AND p.status IN ('ACCEPTED', 'EN_ROUTE') ORDER BY p.id DESC", PickupRequest.class).setParameter("uid", userId).setMaxResults(1).uniqueResultOptional().orElse(null);
 
             if (request == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No active requests found").build();
@@ -131,8 +125,7 @@ public class PickupService {
             }
 
             if (!"PENDING".equals(request.getStatus())) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Cannot cancel request because it is already " + request.getStatus()).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("Cannot cancel request because it is already " + request.getStatus()).build();
             }
 
             request.setStatus("CANCELLED");
@@ -153,9 +146,7 @@ public class PickupService {
     public Response getAvailableRequests() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            List<PickupRequest> requests = session.createQuery(
-                            "FROM PickupRequest p WHERE p.status = 'PENDING' ORDER BY p.id DESC", PickupRequest.class)
-                    .getResultList();
+            List<PickupRequest> requests = session.createQuery("FROM PickupRequest p WHERE p.status = 'PENDING' ORDER BY p.id DESC", PickupRequest.class).getResultList();
 
             List<PickupRequestDTO> dtoList = new ArrayList<>();
             for (PickupRequest request : requests) {
@@ -187,8 +178,7 @@ public class PickupService {
             return Response.status(Response.Status.OK).entity(dtoList).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("Error fetching available requests").build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching available requests").build();
         } finally {
             session.close();
         }
@@ -208,8 +198,7 @@ public class PickupService {
             }
 
             if (!"PENDING".equals(request.getStatus())) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Sorry, this job is no longer available.").build();
+                return Response.status(Response.Status.BAD_REQUEST).entity("Sorry, this job is no longer available.").build();
             }
 
             Driver driver = session.find(Driver.class, driverId);
@@ -222,7 +211,6 @@ public class PickupService {
 
             session.merge(request);
             transaction.commit();
-
             return Response.status(Response.Status.OK).entity("Job accepted successfully!").build();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
@@ -233,5 +221,31 @@ public class PickupService {
         }
     }
 
+    // Active Driver Request
+    public Response getActiveDriverRequest(int driverId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            PickupRequest request = session.createQuery("FROM PickupRequest p WHERE p.driver.id = :did AND p.status = 'ACCEPTED' ORDER BY p.id DESC", PickupRequest.class).setParameter("did", driverId).setMaxResults(1).uniqueResult();
 
+            if (request == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("No active job").build();
+            }
+
+            PickupRequestDTO dto = new PickupRequestDTO();
+            dto.setId(request.getId());
+            dto.setWasteType(request.getWaste_type());
+            dto.setWeight(request.getTotal_weight());
+            dto.setAddress(request.getAddress());
+            dto.setLatitude(request.getLatitude());
+            dto.setLongitude(request.getLongitude());
+            dto.setStatus(request.getStatus());
+
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching active job").build();
+        } finally {
+            session.close();
+        }
+    }
 }
