@@ -5,6 +5,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.dev.dto.PickupRequestDTO;
 import org.dev.service.PickupService;
+import org.dev.service.DriverService;
 import retrofit2.Call;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class PickupController {
 
     private final PickupService pickupService = new PickupService();
+    private DriverService driverService = new DriverService();
 
     @POST
     @Path("/create")
@@ -56,5 +58,12 @@ public class PickupController {
     @Path("/complete/{requestId}")
     public Response completeJob(@PathParam("requestId") int requestId) {
         return pickupService.completePickupRequest(requestId);
+    }
+
+    @GET
+    @Path("/{id}/earnings")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDriverEarnings(@PathParam("id") int driverId) {
+        return driverService.getDriverEarningsSummary(driverId);
     }
 }

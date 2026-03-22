@@ -1,6 +1,8 @@
 package org.dev.service;
 
 import jakarta.ws.rs.core.Response;
+import org.dev.dto.CollectionHistoryDTO;
+import org.dev.dto.DriverEarningsDTO;
 import org.dev.dto.PickupRequestDTO;
 import org.dev.entity.Driver;
 import org.dev.entity.PickupRequest;
