@@ -19,6 +19,6 @@
     <mapping class="org.dev.entity.VerificationStatus"/>
     <mapping class="org.dev.entity.WastePricing"/>
     <mapping class="org.dev.entity.PickupRequest"/>
-    <mapping class="org.dev.entity.Transaction"/>
+    <mapping class="org.dev.entity.Transactiondto"/>
   </session-factory>
 </hibernate-configuration>
