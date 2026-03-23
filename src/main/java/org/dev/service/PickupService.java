@@ -4,6 +4,7 @@ import jakarta.ws.rs.core.Response;
 import org.dev.dto.CollectionHistoryDTO;
 import org.dev.dto.DriverEarningsDTO;
 import org.dev.dto.PickupRequestDTO;
+import org.dev.dto.SellerHistoryDTO;
 import org.dev.entity.Driver;
 import org.dev.entity.PickupRequest;
 import org.dev.entity.User;
@@ -276,6 +277,53 @@ public class PickupService {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to complete job").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    //Get Seller History Summary
+    public Response getSellerHistorySummary(int userId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            // 1. Get ALL requests made by this seller (newest first)
+            List<PickupRequest> userRequests = session.createQuery(
+                            "FROM PickupRequest p WHERE p.user.id = :uid ORDER BY p.id DESC", PickupRequest.class)
+                    .setParameter("uid", userId)
+                    .getResultList();
+
+            // 2. Calculate Total Earned from Transactions linked to this seller
+            Double totalEarned = session.createQuery(
+                            "SELECT SUM(t.amount_paid) FROM Transactiondto t WHERE t.pickupRequest.user.id = :uid", Double.class)
+                    .setParameter("uid", userId)
+                    .uniqueResult();
+
+            if (totalEarned == null) {
+                totalEarned = 0.0;
+            }
+
+            // 3. Convert Entity list to DTO list
+            List<PickupRequestDTO> historyList = new ArrayList<>();
+            for (PickupRequest req : userRequests) {
+                PickupRequestDTO dto = new PickupRequestDTO();
+                dto.setId(req.getId());
+                dto.setWasteType(req.getWaste_type());
+                dto.setWeight(req.getTotal_weight()); // Or getTotal_weight() depending on your entity!
+                dto.setStatus(req.getStatus());
+                historyList.add(dto);
+            }
+
+            // 4. Package and return
+            SellerHistoryDTO result = new SellerHistoryDTO();
+            result.setTotalRequests(userRequests.size());
+            result.setTotalEarned(totalEarned);
+            result.setHistory(historyList);
+
+            return Response.ok(result).build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error loading seller history").build();
         } finally {
             session.close();
         }
