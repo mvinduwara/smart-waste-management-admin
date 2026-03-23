@@ -149,11 +149,9 @@ public class DriverService {
     }
 
     // Driver Earnings Calculation
-    // Driver Earnings Calculation
     public Response getDriverEarningsSummary(int driverId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            // 1. Calculate Total Waste Collected from COMPLETED jobs
             List<PickupRequest> completedJobs = session.createQuery(
                             "FROM PickupRequest p WHERE p.driver.id = :did AND p.status = 'COMPLETED'", PickupRequest.class)
                     .setParameter("did", driverId)
@@ -162,10 +160,10 @@ public class DriverService {
             double totalWaste = 0.0;
             for (PickupRequest job : completedJobs) {
                 try {
-                    // Extract numbers from strings like "5.5 kg"
-                    // FIXED: Changed getTotal_weight() to getApproximate_weight()
-                    String weightStr = job.getTotal_weight().replaceAll("[^\\d.]", "");
-                    if (!weightStr.isEmpty()) totalWaste += Double.parseDouble(weightStr);
+                    if (job.getTotal_weight() != null) {
+                        String weightStr = job.getTotal_weight().replaceAll("[^\\d.]", "");
+                        if (!weightStr.isEmpty()) totalWaste += Double.parseDouble(weightStr);
+                    }
                 } catch (Exception ignored) {}
             }
 
@@ -178,32 +176,25 @@ public class DriverService {
             List<CollectionHistoryDTO> history = new ArrayList<>();
             java.time.LocalDate today = java.time.LocalDate.now();
 
-            // FIXED: Iterating over transactionList properly
             for (Transactiondto t : transactionList) {
-                // Check if transaction happened today
                 if (t.getTimestamp() != null && t.getTimestamp().toLocalDateTime().toLocalDate().isEqual(today)) {
                     todaysPayout += (t.getAmount_paid() != null ? t.getAmount_paid() : 0.0);
                 }
-
-                // Add to history list
                 CollectionHistoryDTO dto = new CollectionHistoryDTO();
                 dto.setRequestId(t.getPickupRequest().getId());
                 dto.setDate(t.getTimestamp() != null ? t.getTimestamp().toLocalDateTime().toLocalDate().toString() : "Unknown");
                 dto.setWasteType(t.getPickupRequest().getWaste_type());
-                // FIXED: Changed getTotal_weight() to getApproximate_weight()
                 dto.setWeight(t.getPickupRequest().getTotal_weight());
                 dto.setAmountPaid(t.getAmount_paid() != null ? t.getAmount_paid() : 0.0);
                 history.add(dto);
             }
 
-            // 3. Package and Send
             DriverEarningsDTO result = new DriverEarningsDTO();
             result.setTodaysPayout(todaysPayout);
             result.setTotalWasteCollected(totalWaste);
             result.setHistory(history);
 
             return Response.ok(result).build();
-
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().entity("Error loading earnings").build();
