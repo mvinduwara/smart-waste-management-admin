@@ -66,4 +66,11 @@ public class PickupController {
     public Response getDriverEarnings(@PathParam("id") int driverId) {
         return driverService.getDriverEarningsSummary(driverId);
     }
+
+    @GET
+    @Path("/seller/{userId}/history")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getSellerHistory(@PathParam("userId") int userId) {
+        return pickupService.getSellerHistorySummary(userId);
+    }
 }
