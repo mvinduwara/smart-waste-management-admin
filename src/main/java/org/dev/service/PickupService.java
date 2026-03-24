@@ -328,4 +328,38 @@ public class PickupService {
             session.close();
         }
     }
+
+    // Get all requests for a specific user
+    public Response getUserRequests(int userId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<PickupRequest> requests = session.createQuery(
+                            "FROM PickupRequest p WHERE p.user.id = :uid ORDER BY p.id DESC", PickupRequest.class)
+                    .setParameter("uid", userId)
+                    .getResultList();
+
+            List<PickupRequestDTO> dtoList = new ArrayList<>();
+            for (PickupRequest req : requests) {
+                PickupRequestDTO dto = new PickupRequestDTO();
+                dto.setId(req.getId());
+                dto.setWasteType(req.getWaste_type());
+                dto.setWeight(req.getTotal_weight());
+                dto.setEstimatedValue(req.getEstimated_value()); // Critical for your dashboard stats
+                dto.setStatus(req.getStatus());
+
+                if (req.getCreated_at() != null) {
+                    dto.setCreatedAt(req.getCreated_at().toString());
+                }
+
+                dtoList.add(dto);
+            }
+
+            return Response.status(Response.Status.OK).entity(dtoList).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching user requests").build();
+        } finally {
+            session.close();
+        }
+    }
 }

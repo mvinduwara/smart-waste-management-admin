@@ -73,4 +73,10 @@ public class PickupController {
     public Response getSellerHistory(@PathParam("userId") int userId) {
         return pickupService.getSellerHistorySummary(userId);
     }
+
+    @GET
+    @Path("/user/{userId}")
+    public Response getUserRequests(@PathParam("userId") int userId) {
+        return pickupService.getUserRequests(userId);
+    }
 }

@@ -110,10 +110,11 @@ public class DriverService {
             Driver existing = session.find(Driver.class, id);
             if (existing == null) return Response.status(404).build();
 
+            existing.setUsername(updated.getUsername());
             existing.setContact(updated.getContact());
-            existing.setVehicle_type(updated.getVehicle_type());
-            existing.setVehicle_reg_no(updated.getVehicle_reg_no());
-            existing.setLicense_number(updated.getLicense_number());
+//            existing.setVehicle_type(updated.getVehicle_type());
+//            existing.setVehicle_reg_no(updated.getVehicle_reg_no());
+//            existing.setLicense_number(updated.getLicense_number());
 
             session.merge(existing);
             tx.commit();

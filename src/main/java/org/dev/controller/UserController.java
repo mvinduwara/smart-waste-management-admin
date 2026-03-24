@@ -26,4 +26,10 @@ public class UserController {
     public Response updateFcmToken(@PathParam("id") int userId, String fcmToken) {
         return userService.updateFcmToken(userId, fcmToken);
     }
+
+    @PUT
+    @Path("/profile/{id}")
+    public Response updateProfile(@PathParam("id") int userId, User updatedData) {
+        return userService.updateProfile(userId, updatedData);
+    }
 }
