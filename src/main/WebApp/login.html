@@ -43,17 +43,18 @@
 															<div class="dz-separator-outer m-b5">
 																<div class="dz-separator bg-primary style-liner"></div>
 															</div>
-															<p>Enter your e-mail address and your password. </p>
+															<p>Enter your user name address and your password. </p>
 															<div class="form-group mb-3">
-																<input type="email" class="form-control"
-																	value="hello@example.com">
+																<input type="text" class="form-control"
+																	 id="adminUsername">
 															</div>
 															<div class="form-group mb-3">
 																<input type="password" class="form-control"
-																	value="Password">
+																	 id="adminPassword">
 															</div>
 															<div class="form-group text-left mb-5 forget-main">
-																<button type="submit" class="btn btn-primary">Sign Me
+																<button type="submit" class="btn btn-primary"
+																		onclick="handleAdminLogin(event)">Sign Me
 																	In</button>
 															</div>
 														</form>
@@ -76,6 +77,7 @@
 		</div>
 
 		<!-- Required vendors -->
+		<script src="js/fetching.js"></script>
 		<script src="vendor/global/global.min.js"></script>
 		<script src="js/deznav-init.js"></script>
 		<script src="js/custom.js"></script>
