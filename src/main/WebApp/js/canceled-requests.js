@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function() {
     const adminToken = localStorage.getItem('adminAccessToken');
     if (!adminToken) {
@@ -6,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = 'login.html';
         return;
     }
-
     fetchCanceledRequests(adminToken);
 });
 
@@ -15,51 +13,62 @@ function fetchCanceledRequests(token) {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token // Pass the JWT token
+            'Authorization': 'Bearer ' + token
         }
     })
         .then(response => {
             if (response.status === 401) {
-                // Token expired or invalid
                 localStorage.removeItem('adminAccessToken');
                 window.location.href = 'login.html';
                 throw new Error('Unauthorized');
             }
             return response.json();
         })
-        .then(data => {
-            populateTable(data);
-        })
+        .then(data => populateCanceledTable(data))
         .catch(error => console.error('Error fetching data:', error));
 }
 
-function populateTable(requests) {
+function populateCanceledTable(requests) {
     const tableBody = document.getElementById('canceledTableBody');
-    tableBody.innerHTML = ''; // Clear existing rows
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
 
     if (!requests || requests.length === 0) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">
-                    No canceled requests available
+                <td colspan="12" class="text-center text-muted py-5">
+                    <h5>No canceled records available</h5>
                 </td>
-            </tr>
-        `;
+            </tr>`;
         return;
     }
-    requests.forEach(req => {
-        // Format date nicely if it exists
-        let dateObj = req.createdAt ? new Date(req.createdAt) : new Date();
-        let formattedDate = dateObj.toLocaleDateString();
+
+    requests.forEach((req, index) => {
+        let formattedDate = 'N/A';
+        if(req.createdAt) {
+            let dateObj = new Date(req.createdAt);
+            formattedDate = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString();
+        }
+
+        let coordinates = (req.latitude && req.longitude)
+            ? `<a href="https://maps.google.com/?q=${req.latitude},${req.longitude}" target="_blank" class="text-primary font-weight-bold">View Map <i class="fa fa-external-link"></i></a>`
+            : '<span class="text-muted">N/A</span>';
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><strong>#${req.id}</strong></td>
-            <td>User ID: ${req.userId || 'N/A'}</td>
+            <td><strong>${index + 1}</strong></td>
+            <td class="color-primary"><strong>#${req.id || 'N/A'}</strong></td>
+            <td>${req.userName || '<span class="text-muted">N/A</span>'}</td>
+            <td>${req.userEmail || '<span class="text-muted">N/A</span>'}</td>
+            <td>${req.driverName || '<span class="text-muted">Unassigned</span>'}</td>
+            <td>${req.driverContact || '<span class="text-muted">N/A</span>'}</td>
             <td>${req.wasteType || 'N/A'}</td>
-            <td>${req.weight || 'N/A'} kg</td>
+            <td>${req.address || 'N/A'}</td>
+            <td>${req.notes || '<span class="text-muted">None</span>'}</td>
+            <td><strong>${req.estimatedValue ? '$' + req.estimatedValue : '$0.00'}</strong></td>
+            <td>${coordinates}</td>
             <td>${formattedDate}</td>
-            <td><span class="badge badge-danger">${req.status}</span></td>
         `;
         tableBody.appendChild(row);
     });

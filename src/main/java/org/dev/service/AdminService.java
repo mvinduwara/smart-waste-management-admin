@@ -46,29 +46,46 @@ public class AdminService {
     public Response getRequestsByStatus(String status) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
-            List<org.dev.entity.PickupRequest> requests = session.createQuery(
+            java.util.List<org.dev.entity.PickupRequest> requests = session.createQuery(
                             "FROM PickupRequest p WHERE p.status = :status ORDER BY p.id DESC", org.dev.entity.PickupRequest.class)
                     .setParameter("status", status)
                     .getResultList();
 
-            List<PickupRequestDTO> dtoList = new ArrayList<>();
-            for (org.dev.entity.PickupRequest req : requests) {
-              PickupRequestDTO dto = new PickupRequestDTO();
-                dto.setId(req.getId());
-                dto.setWasteType(req.getWaste_type());
-                dto.setWeight(req.getTotal_weight());
-                dto.setAddress(req.getAddress());
-                dto.setStatus(req.getStatus());
+            // Using a List of Maps guarantees we bypass existing DTO limitations
+            java.util.List<java.util.Map<String, Object>> responseList = new java.util.ArrayList<>();
 
-                if (req.getUser() != null) {
-                    dto.setUserId(req.getUser().getId());
-                }
+            for (org.dev.entity.PickupRequest req : requests) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("id", req.getId());
+                map.put("wasteType", req.getWaste_type());
+                map.put("address", req.getAddress());
+                map.put("status", req.getStatus());
+
+                // New Fields mapped for the full table
+                map.put("notes", req.getNotes());
+                map.put("estimatedValue", req.getEstimated_value()); // Adjust to getEstimatedValue() if your entity uses camelCase
+                map.put("latitude", req.getLatitude());
+                map.put("longitude", req.getLongitude());
+
                 if (req.getCreated_at() != null) {
-                    dto.setCreatedAt(req.getCreated_at().toString());
+                    map.put("createdAt", req.getCreated_at().toString());
                 }
-                dtoList.add(dto);
+
+                // Safely extract User Data
+                if (req.getUser() != null) {
+                    map.put("userName", req.getUser().getUsername()); // Adjust to getFirst_name() if needed
+                    map.put("userEmail", req.getUser().getEmail());
+                }
+
+                // Safely extract Driver Data (if assigned)
+                if (req.getDriver() != null) {
+                    map.put("driverName", req.getDriver().getUsername()); // Adjust to getFirst_name() if needed
+                    map.put("driverContact", req.getDriver().getContact());
+                }
+
+                responseList.add(map);
             }
-            return Response.ok(dtoList).build();
+            return Response.ok(responseList).build();
         } catch (Exception e) {
             e.printStackTrace();
             return Response.serverError().entity("Error fetching requests").build();
