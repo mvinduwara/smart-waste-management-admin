@@ -26,4 +26,17 @@ public class DriverController {
     public Response getProfile(@PathParam("id") int id) {
         return driverService.getDriverProfile(id);
     }
+
+    @PUT
+    @Path("/{id}/fcm-token")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response updateFcmToken(@PathParam("id") int driverId, String fcmToken) {
+        return driverService.updateFcmToken(driverId, fcmToken);
+    }
+
+    @GET
+    @Path("/{id}/earnings")
+    public Response getEarnings(@PathParam("id") int id) {
+        return driverService.getDriverEarningsSummary(id);
+    }
 }

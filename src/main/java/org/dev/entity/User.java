@@ -24,6 +24,8 @@ public class User implements Serializable {
     @Column(length = 10, nullable = false, unique = true)
     private String contact;
 
+    @Column(name = "fcm_token", columnDefinition = "TEXT")
+    private String fcm_token;
 
     public int getId() {
         return id;
@@ -63,5 +65,13 @@ public class User implements Serializable {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getFcm_token() {
+        return fcm_token;
+    }
+
+    public void setFcm_token(String fcm_token) {
+        this.fcm_token = fcm_token;
     }
 }

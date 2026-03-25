@@ -1,6 +1,9 @@
 package org.dev.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PickupRequestDTO {
+    private int id;
     private int userId;
     private String wasteType;
     private String weight;
@@ -9,6 +12,13 @@ public class PickupRequestDTO {
     private Double latitude;
     private Double longitude;
     private String imageBase64;
+    private String status;
+    private String createdAt;
+    private String estimatedValue;
+    private String driverName;
+    private String driverVehicle;
+    private String vehicleInfo;
+    private String driverContact;
 
     public int getUserId() {
         return userId;
@@ -72,5 +82,69 @@ public class PickupRequestDTO {
 
     public void setImageBase64(String imageBase64) {
         this.imageBase64 = imageBase64;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getEstimatedValue() {
+        return estimatedValue;
+    }
+
+    public void setEstimatedValue(String estimatedValue) {
+        this.estimatedValue = estimatedValue;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    public String getDriverVehicle() {
+        return driverVehicle;
+    }
+
+    public void setDriverVehicle(String driverVehicle) {
+        this.driverVehicle = driverVehicle;
+    }
+
+    public String getVehicleInfo() {
+        return vehicleInfo;
+    }
+
+    public void setVehicleInfo(String vehicleInfo) {
+        this.vehicleInfo = vehicleInfo;
+    }
+
+    public String getDriverContact() {
+        return driverContact;
+    }
+
+    public void setDriverContact(String driverContact) {
+        this.driverContact = driverContact;
     }
 }

@@ -14,16 +14,22 @@ public class UserController {
 
     private final UserService userService = new UserService();
 
-    // API Endpoint: PUT http://localhost:8080/api/user/profile/{id}
-    //    @PUT
-    //    @Path("/profile/{id}")
-    //    public Response updateProfile(@PathParam("id") int userId, User updatedData) {
-    //        return userService.updateProfile(userId, updatedData);
-    //    }
-
     @GET
     @Path("/profile/{id}")
     public Response getUserProfile(@PathParam("id") int userId) {
         return userService.getUserProfile(userId);
+    }
+
+    @PUT
+    @Path("/{id}/fcm-token")
+    @Consumes(MediaType.TEXT_PLAIN)
+    public Response updateFcmToken(@PathParam("id") int userId, String fcmToken) {
+        return userService.updateFcmToken(userId, fcmToken);
+    }
+
+    @PUT
+    @Path("/profile/{id}")
+    public Response updateProfile(@PathParam("id") int userId, User updatedData) {
+        return userService.updateProfile(userId, updatedData);
     }
 }

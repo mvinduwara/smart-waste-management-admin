@@ -1,8 +1,12 @@
 package org.dev.service;
 
+import org.dev.dto.CollectionHistoryDTO;
+import org.dev.dto.DriverEarningsDTO;
 import org.dev.dto.LoggingRequestDTO;
 import org.dev.dto.TokenDTO;
 import org.dev.entity.Driver;
+import org.dev.entity.PickupRequest;
+import org.dev.entity.Transactiondto;
 import org.dev.entity.VerificationStatus;
 import org.dev.util.HibernateUtil;
 import org.dev.util.JWTUtil;
@@ -10,6 +14,9 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.mindrot.jbcrypt.BCrypt;
 import jakarta.ws.rs.core.Response;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DriverService {
 
@@ -103,10 +110,11 @@ public class DriverService {
             Driver existing = session.find(Driver.class, id);
             if (existing == null) return Response.status(404).build();
 
+            existing.setUsername(updated.getUsername());
             existing.setContact(updated.getContact());
-            existing.setVehicle_type(updated.getVehicle_type());
-            existing.setVehicle_reg_no(updated.getVehicle_reg_no());
-            existing.setLicense_number(updated.getLicense_number());
+//            existing.setVehicle_type(updated.getVehicle_type());
+//            existing.setVehicle_reg_no(updated.getVehicle_reg_no());
+//            existing.setLicense_number(updated.getLicense_number());
 
             session.merge(existing);
             tx.commit();
@@ -114,6 +122,83 @@ public class DriverService {
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             return Response.status(500).build();
+        } finally {
+            session.close();
+        }
+    }
+
+    //MESSAGE TOKEN
+    public Response updateFcmToken(int driverId, String fcmToken) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            Driver driver = session.find(Driver.class, driverId);
+            if (driver != null) {
+                driver.setFcm_token(fcmToken);
+                session.merge(driver);
+                transaction.commit();
+                return Response.ok("Token updated").build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            return Response.serverError().entity("Error updating token").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    // Driver Earnings Calculation
+    public Response getDriverEarningsSummary(int driverId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            List<PickupRequest> completedJobs = session.createQuery(
+                            "FROM PickupRequest p WHERE p.driver.id = :did AND p.status = 'COMPLETED'", PickupRequest.class)
+                    .setParameter("did", driverId)
+                    .getResultList();
+
+            double totalWaste = 0.0;
+            for (PickupRequest job : completedJobs) {
+                try {
+                    if (job.getTotal_weight() != null) {
+                        String weightStr = job.getTotal_weight().replaceAll("[^\\d.]", "");
+                        if (!weightStr.isEmpty()) totalWaste += Double.parseDouble(weightStr);
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            List<Transactiondto> transactionList = session.createQuery(
+                            "FROM Transactiondto t WHERE t.pickupRequest.driver.id = :did ORDER BY t.timestamp DESC", Transactiondto.class)
+                    .setParameter("did", driverId)
+                    .getResultList();
+
+            double todaysPayout = 0.0;
+            List<CollectionHistoryDTO> history = new ArrayList<>();
+            java.time.LocalDate today = java.time.LocalDate.now();
+
+            for (Transactiondto t : transactionList) {
+                if (t.getTimestamp() != null && t.getTimestamp().toLocalDateTime().toLocalDate().isEqual(today)) {
+                    todaysPayout += (t.getAmount_paid() != null ? t.getAmount_paid() : 0.0);
+                }
+                CollectionHistoryDTO dto = new CollectionHistoryDTO();
+                dto.setRequestId(t.getPickupRequest().getId());
+                dto.setDate(t.getTimestamp() != null ? t.getTimestamp().toLocalDateTime().toLocalDate().toString() : "Unknown");
+                dto.setWasteType(t.getPickupRequest().getWaste_type());
+                dto.setWeight(t.getPickupRequest().getTotal_weight());
+                dto.setAmountPaid(t.getAmount_paid() != null ? t.getAmount_paid() : 0.0);
+                history.add(dto);
+            }
+
+            DriverEarningsDTO result = new DriverEarningsDTO();
+            result.setTodaysPayout(todaysPayout);
+            result.setTotalWasteCollected(totalWaste);
+            result.setHistory(history);
+
+            return Response.ok(result).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error loading earnings").build();
         } finally {
             session.close();
         }

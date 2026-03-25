@@ -61,7 +61,7 @@ public class UserService {
     }
 
     //LOGIN LOGIC
-    public  Response validateUser(LoggingRequestDTO loggingRequestDTO) {
+    public Response validateUser(LoggingRequestDTO loggingRequestDTO) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
@@ -131,6 +131,28 @@ public class UserService {
 
             user.setPassword(null);
             return Response.status(Response.Status.OK).entity(user).build();
+        } finally {
+            session.close();
+        }
+    }
+
+    //MESSAGE TOKEN
+    public Response updateFcmToken(int userId, String fcmToken) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            User user = session.get(User.class, userId);
+            if (user != null) {
+                user.setFcm_token(fcmToken);
+                session.merge(user);
+                transaction.commit();
+                return Response.ok("Token updated").build();
+            }
+            return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            return Response.serverError().entity("Error updating token").build();
         } finally {
             session.close();
         }
