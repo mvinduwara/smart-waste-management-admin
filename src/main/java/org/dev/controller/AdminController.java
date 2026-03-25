@@ -1,9 +1,6 @@
 package org.dev.controller;
 
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.dev.dto.LoggingRequestDTO;
@@ -26,5 +23,17 @@ public class AdminController {
     @Path("/requests/{status}")
     public Response getRequests(@jakarta.ws.rs.PathParam("status") String status) {
         return adminService.getRequestsByStatus(status.toUpperCase());
+    }
+
+    @GET
+    @Path("/users")
+    public Response getAllUsers() {
+        return adminService.getAllUsers();
+    }
+
+    @GET
+    @Path("/drivers")
+    public Response getAllDrivers() {
+        return adminService.getAllDrivers();
     }
 }

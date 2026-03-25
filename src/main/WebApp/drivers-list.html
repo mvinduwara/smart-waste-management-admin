@@ -237,7 +237,7 @@
 																<th>Password</th>
 															</tr>
 														</thead>
-														<tbody>
+														<tbody id="driversTableBody">
 															<tr>
 																<th>1</th>
 																<td class="color-primary">$21.56</td>
@@ -268,6 +268,51 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			fetchDrivers();
+		});
+
+		function fetchDrivers() {
+			// Fetching from the new admin drivers endpoint
+			fetch('http://localhost:8080/api/admin/drivers', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+					.then(response => {
+						if (!response.ok) throw new Error('Network response was not ok');
+						return response.json();
+					})
+					.then(data => {
+						const tableBody = document.getElementById('driversTableBody');
+						tableBody.innerHTML = ''; // Clear existing dummy data
+
+						if (data.length === 0) {
+							tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No drivers found.</td></tr>';
+							return;
+						}
+
+						data.forEach(driver => {
+							const row = document.createElement('tr');
+
+							// Generating the row and setting the link to driver-profile.html with the ID
+							row.innerHTML = `
+                    <th>${driver.id}</th>
+                    <td class="color-primary">${driver.username || 'N/A'}</td>
+                    <td class="color-primary">${driver.contact || 'N/A'}</td>
+                    <td>
+                        <a href="driver-profile.html?id=${driver.id}" class="btn btn-primary btn-sm">View Profile</a>
+                    </td>
+                `;
+							tableBody.appendChild(row);
+						});
+					})
+					.catch(error => console.error('Error fetching drivers:', error));
+		}
+	</script>
 
 	<!-- Required vendors -->
 	<script src="vendor/global/global.min.js"></script>

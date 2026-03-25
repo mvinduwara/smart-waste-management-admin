@@ -94,5 +94,58 @@ public class AdminService {
         }
     }
 
+    // Load All Users
+    public Response getAllUsers() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            // Adjust "User" to match your exact entity name if different
+            java.util.List<org.dev.entity.User> users = session.createQuery("FROM User", org.dev.entity.User.class).getResultList();
+
+            java.util.List<java.util.Map<String, Object>> responseList = new java.util.ArrayList<>();
+
+            for (org.dev.entity.User user : users) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("id", user.getId());
+                map.put("username", user.getUsername());
+                map.put("email", user.getEmail());
+                // Assuming you have a contact/phone field. Update getter if necessary:
+                map.put("contact", user.getContact());
+
+                responseList.add(map);
+            }
+            return Response.ok(responseList).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error fetching users").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    // Load All Drivers
+    public Response getAllDrivers() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            // Adjust "Driver" to match your exact entity name if different
+            java.util.List<org.dev.entity.Driver> drivers = session.createQuery("FROM Driver", org.dev.entity.Driver.class).getResultList();
+
+            java.util.List<java.util.Map<String, Object>> responseList = new java.util.ArrayList<>();
+
+            for (org.dev.entity.Driver driver : drivers) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("id", driver.getId());
+                map.put("username", driver.getUsername());
+                map.put("contact", driver.getContact());
+
+                responseList.add(map);
+            }
+            return Response.ok(responseList).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error fetching drivers").build();
+        } finally {
+            session.close();
+        }
+    }
 
 }
