@@ -252,8 +252,8 @@ public class PickupService {
         }
     }
 
-    //Arrive To Location
-    public Response completePickupRequest(int requestId) {
+    // Arrive To Location & Process Payment
+    public Response completePickupRequest(int requestId, double finalAmount) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
@@ -265,14 +265,22 @@ public class PickupService {
                 return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
             }
 
-            // Change status to COMPLETED
+            // 1. Change status to COMPLETED
             request.setStatus("COMPLETED");
-
             session.merge(request);
+
+            // 2. Create Transaction Record with the ACTUAL amount calculated by the driver
+            org.dev.entity.Transactiondto paymentTransaction = new org.dev.entity.Transactiondto();
+            paymentTransaction.setPickupRequest(request);
+            paymentTransaction.setAmount_paid(finalAmount); // <--- Using the dynamic amount
+            paymentTransaction.setPayment_token("TXN_CARD_" + System.currentTimeMillis());
+            paymentTransaction.setTimestamp(new java.sql.Timestamp(System.currentTimeMillis()));
+
+            session.persist(paymentTransaction);
+
             transaction.commit();
 
             return Response.status(Response.Status.OK).entity("Job successfully completed!").build();
-
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();

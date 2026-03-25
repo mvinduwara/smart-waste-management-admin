@@ -54,11 +54,11 @@ public class PickupController {
         return pickupService.getActiveDriverRequest(driverId);
     }
 
-    @PUT
-    @Path("/complete/{requestId}")
-    public Response completeJob(@PathParam("requestId") int requestId) {
-        return pickupService.completePickupRequest(requestId);
-    }
+//    @PUT
+//    @Path("/complete/{requestId}")
+//    public Response completeJob(@PathParam("requestId") int requestId) {
+//        return pickupService.completePickupRequest(requestId);
+//    }
 
     @GET
     @Path("/seller/{userId}/history")
@@ -71,5 +71,11 @@ public class PickupController {
     @Path("/user/{userId}")
     public Response getUserRequests(@PathParam("userId") int userId) {
         return pickupService.getUserRequests(userId);
+    }
+
+    @PUT
+    @Path("/complete/{requestId}/{finalAmount}")
+    public Response completeJob(@PathParam("requestId") int requestId, @PathParam("finalAmount") double finalAmount) {
+        return pickupService.completePickupRequest(requestId, finalAmount);
     }
 }
