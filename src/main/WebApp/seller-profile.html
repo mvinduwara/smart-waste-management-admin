@@ -143,8 +143,8 @@
 							<span class="nav-text">User Management</span>
 						</a>
 						<ul aria-expanded="false">
-							<li><a href="chart-flot.html">Customers</a></li>
-							<li><a href="chart-morris.html">Drivers</a></li>
+							<li><a href="seller-list.html">Customers</a></li>
+							<li><a href="drivers-list.html">Drivers</a></li>
 						</ul>
 					</li>
 
@@ -325,6 +325,79 @@
 				</div>
 			</div>
 		</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Get the ID from the URL (e.g., seller-profile.html?id=5)
+				const urlParams = new URLSearchParams(window.location.search);
+				const userId = urlParams.get('id');
+
+				if (userId) {
+					fetchUserProfile(userId);
+				} else {
+					alert("No user ID provided in the URL.");
+				}
+			});
+
+			function fetchUserProfile(userId) {
+				// Call your user profile API
+				fetch(`http://localhost:8080/api/user/profile/${userId}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+						.then(response => {
+							if (!response.ok) throw new Error('Failed to fetch user details');
+							return response.json();
+						})
+						.then(userData => {
+							// Map the data to your specific form IDs
+
+							// Username
+							if (document.getElementById('validationCustom01')) {
+								document.getElementById('validationCustom01').value = userData.username || '';
+								// Optional: Make it readonly so admin just views it
+								document.getElementById('validationCustom01').readOnly = true;
+							}
+
+							// Email
+							if (document.getElementById('validationCustom02')) {
+								document.getElementById('validationCustom02').value = userData.email || '';
+								document.getElementById('validationCustom02').readOnly = true;
+							}
+
+							// Password (For security, just show placeholders rather than the actual hash)
+							if (document.getElementById('validationCustom03')) {
+								document.getElementById('validationCustom03').value = '********';
+								document.getElementById('validationCustom03').readOnly = true;
+							}
+
+							// Contact
+							if (document.getElementById('validationCustom06')) {
+								// Ensure this maps to your actual backend contact field
+								document.getElementById('validationCustom06').value = userData.contact || '';
+								document.getElementById('validationCustom06').readOnly = true;
+							}
+
+							// Total Earnings & Requests
+							// Note: If these aren't returned by your current API, they will show '0'.
+							// You may need to update your UserService to calculate and return these values.
+							if (document.getElementById('validationCustom07')) {
+								document.getElementById('validationCustom07').value = userData.totalEarnings || '0.00';
+								document.getElementById('validationCustom07').readOnly = true;
+							}
+							if (document.getElementById('validationCustom08')) {
+								document.getElementById('validationCustom08').value = userData.totalRequests || '0';
+								document.getElementById('validationCustom08').readOnly = true;
+							}
+						})
+						.catch(error => {
+							console.error('Error:', error);
+							alert("Could not load user profile data.");
+						});
+			}
+		</script>
 
 		<!-- footer -->
 		<div class="footer">

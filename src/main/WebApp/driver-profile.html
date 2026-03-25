@@ -358,6 +358,89 @@
 			</div>
 		</div>
 
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				// Get the ID from the URL (e.g., driver-profile.html?id=3)
+				const urlParams = new URLSearchParams(window.location.search);
+				const driverId = urlParams.get('id');
+
+				if (driverId) {
+					fetchDriverProfile(driverId);
+				} else {
+					alert("No driver ID provided in the URL.");
+				}
+			});
+
+			function fetchDriverProfile(driverId) {
+				// Call your driver profile API
+				fetch(`http://localhost:8080/api/driver/profile/${driverId}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+						.then(response => {
+							if (!response.ok) throw new Error('Failed to fetch driver details');
+							return response.json();
+						})
+						.then(driverData => {
+							// Map the data to your specific form IDs
+
+							// Username
+							if (document.getElementById('validationCustom01')) {
+								document.getElementById('validationCustom01').value = driverData.username || '';
+								document.getElementById('validationCustom01').readOnly = true;
+							}
+
+							// Contact / Email (Your label says Contact, but placeholder says Email. Mapping Email here)
+							if (document.getElementById('validationCustom02')) {
+								document.getElementById('validationCustom02').value = driverData.email || '';
+								document.getElementById('validationCustom02').readOnly = true;
+							}
+
+							// Password Placeholder
+							if (document.getElementById('validationCustom03')) {
+								document.getElementById('validationCustom03').value = '********';
+								document.getElementById('validationCustom03').readOnly = true;
+							}
+
+							// License Number
+							if (document.getElementById('validationCustom06')) {
+								document.getElementById('validationCustom06').value = driverData.license_number || '';
+								document.getElementById('validationCustom06').readOnly = true;
+							}
+
+							// Vehicle Reg No
+							if (document.getElementById('validationCustom07')) {
+								document.getElementById('validationCustom07').value = driverData.vehicle_reg_no || '';
+								document.getElementById('validationCustom07').readOnly = true;
+							}
+
+							// Phone (Mapping the driver's contact number here)
+							if (document.getElementById('validationCustom08')) {
+								document.getElementById('validationCustom08').value = driverData.contact || '';
+								document.getElementById('validationCustom08').readOnly = true;
+							}
+
+							// Vehicle Type
+							if (document.getElementById('validationCustom09')) {
+								document.getElementById('validationCustom09').value = driverData.vehicle_type || '';
+								document.getElementById('validationCustom09').readOnly = true;
+							}
+
+							// Status (e.g., Active, Pending)
+							if (document.getElementById('validationCustom10')) {
+								document.getElementById('validationCustom10').value = driverData.status || '';
+								document.getElementById('validationCustom10').readOnly = true;
+							}
+						})
+						.catch(error => {
+							console.error('Error:', error);
+							alert("Could not load driver profile data.");
+						});
+			}
+		</script>
+
 		<!-- footer -->
 		<div class="footer">
 			<div class="copyright">

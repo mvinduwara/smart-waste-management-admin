@@ -36,4 +36,16 @@ public class AdminController {
     public Response getAllDrivers() {
         return adminService.getAllDrivers();
     }
+
+    @GET
+    @Path("/user/{id}")
+    public Response getUserProfile(@PathParam("id") int id) {
+        return adminService.getUserById(id);
+    }
+
+    @GET
+    @Path("/driver/{id}")
+    public Response getDriverProfile(@PathParam("id") int id) {
+        return adminService.getDriverById(id);
+    }
 }

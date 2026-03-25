@@ -148,4 +148,57 @@ public class AdminService {
         }
     }
 
+    // Fetch a single User Profile for Admin
+    public Response getUserById(int userId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            org.dev.entity.User user = session.find(org.dev.entity.User.class, userId);
+            if (user == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
+            }
+
+            // Map the data to avoid exposing sensitive info or recursion
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", user.getId());
+            map.put("username", user.getUsername());
+            map.put("email", user.getEmail());
+            map.put("contact", user.getContact());
+            // Add your totalEarnings and totalRequests logic here if you have it in the DB
+
+            return Response.ok(map).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error fetching user profile").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    // Fetch a single Driver Profile for Admin
+    public Response getDriverById(int driverId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            org.dev.entity.Driver driver = session.find(org.dev.entity.Driver.class, driverId);
+            if (driver == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
+            }
+
+            java.util.Map<String, Object> map = new java.util.HashMap<>();
+            map.put("id", driver.getId());
+            map.put("username", driver.getUsername());
+            map.put("contact", driver.getContact());
+            map.put("license_number", driver.getLicense_number());
+            map.put("vehicle_reg_no", driver.getVehicle_reg_no());
+            map.put("vehicle_type", driver.getVehicle_type());
+            // Add status if you have it in your entity
+
+            return Response.ok(map).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error fetching driver profile").build();
+        } finally {
+            session.close();
+        }
+    }
+
 }
