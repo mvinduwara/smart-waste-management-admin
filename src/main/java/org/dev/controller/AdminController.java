@@ -21,4 +21,10 @@ public class AdminController {
     public Response login(LoggingRequestDTO loginRequest) {
         return adminService.validateAdmin(loginRequest);
     }
+
+    @jakarta.ws.rs.GET
+    @Path("/requests/{status}")
+    public Response getRequests(@jakarta.ws.rs.PathParam("status") String status) {
+        return adminService.getRequestsByStatus(status.toUpperCase());
+    }
 }
