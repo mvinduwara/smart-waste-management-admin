@@ -5,10 +5,7 @@ import org.dev.dto.CollectionHistoryDTO;
 import org.dev.dto.DriverEarningsDTO;
 import org.dev.dto.PickupRequestDTO;
 import org.dev.dto.SellerHistoryDTO;
-import org.dev.entity.Driver;
-import org.dev.entity.PickupRequest;
-import org.dev.entity.User;
-import org.dev.entity.WastePricing;
+import org.dev.entity.*;
 import org.dev.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -265,21 +262,23 @@ public class PickupService {
                 return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
             }
 
+            User seller = request.getUser();
+            double currentBalance = seller.getWalletBalance();
+            seller.setWalletBalance(currentBalance + finalAmount);
+
             // 1. Change status to COMPLETED
             request.setStatus("COMPLETED");
             session.merge(request);
+            session.merge(seller);
 
-            // 2. Create Transaction Record with the ACTUAL amount calculated by the driver
-            org.dev.entity.Transactiondto paymentTransaction = new org.dev.entity.Transactiondto();
+            Transactiondto paymentTransaction = new Transactiondto();
             paymentTransaction.setPickupRequest(request);
-            paymentTransaction.setAmount_paid(finalAmount); // <--- Using the dynamic amount
+            paymentTransaction.setAmount_paid(finalAmount);
             paymentTransaction.setPayment_token("TXN_CARD_" + System.currentTimeMillis());
             paymentTransaction.setTimestamp(new java.sql.Timestamp(System.currentTimeMillis()));
 
             session.persist(paymentTransaction);
-
             transaction.commit();
-
             return Response.status(Response.Status.OK).entity("Job successfully completed!").build();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
