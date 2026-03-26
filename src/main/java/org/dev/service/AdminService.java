@@ -201,4 +201,36 @@ public class AdminService {
         }
     }
 
+    // Load All Transactions
+    public Response getAllTransactions() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            // Check your exact entity name (e.g., Transactiondto, Transaction, etc.)
+            java.util.List<org.dev.entity.Transactiondto> transactions =
+                    session.createQuery("FROM Transactiondto", org.dev.entity.Transactiondto.class).getResultList();
+
+            java.util.List<java.util.Map<String, Object>> responseList = new java.util.ArrayList<>();
+
+            for (org.dev.entity.Transactiondto transaction : transactions) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+
+                // IMPORTANT: Change these .get() methods to match what is inside your Transactiondto.java!
+                map.put("id", transaction.getId());
+                // If it relates to a user/pickup request, fetch the name/details
+                // map.put("customer", transaction.getUser().getUsername());
+                // map.put("amount", transaction.getAmount());
+                // map.put("date", transaction.getDate().toString());
+                // map.put("status", transaction.getStatus());
+
+                responseList.add(map);
+            }
+            return Response.ok(responseList).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error fetching transactions").build();
+        } finally {
+            session.close();
+        }
+    }
+
 }

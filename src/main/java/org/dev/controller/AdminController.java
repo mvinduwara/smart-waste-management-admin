@@ -48,4 +48,10 @@ public class AdminController {
     public Response getDriverProfile(@PathParam("id") int id) {
         return adminService.getDriverById(id);
     }
+
+    @GET
+    @Path("/transactions")
+    public Response getAllTransactions() {
+        return adminService.getAllTransactions();
+    }
 }
