@@ -72,7 +72,7 @@ public class PickupService {
         }
     }
 
-    //Get Active Requset Data
+    //Get Active Requests Data
     public Response getActiveRequestByUser(int userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -111,7 +111,7 @@ public class PickupService {
         }
     }
 
-    //Cancel Requset
+    //Cancel Requests
     public Response cancelPickupRequest(int requestId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -142,7 +142,7 @@ public class PickupService {
         }
     }
 
-    //Available Checkings
+    //Available Checking
     public Response getAvailableRequests() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -266,7 +266,6 @@ public class PickupService {
             double currentBalance = seller.getWalletBalance();
             seller.setWalletBalance(currentBalance + finalAmount);
 
-            // 1. Change status to COMPLETED
             request.setStatus("COMPLETED");
             session.merge(request);
             session.merge(seller);
