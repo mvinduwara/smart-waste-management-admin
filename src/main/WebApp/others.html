@@ -219,26 +219,24 @@
 							<div class="card-body">
 								<div class="basic-form">
 									<form>
-										<div class="mb-3">
-											<label class="form-label">Material pricing(type)</label>
-											<select class="default-select  form-control wide" >
-												<option>1</option>
-												<option>2</option>
-												<option>3</option>
-												<option>4</option>
+										<div class="form-group">
+											<label>Select Waste Type</label>
+											<select id="wasteTypeSelector" class="form-control default-select">
+												<option value="" disabled selected>Loading...</option>
 											</select>
 										</div>
-										<div class="row">
-											<div class="mb-3 col-md-6">
-												<label class="form-label">Type</label>
-												<input type="text" class="form-control" placeholder="1234 Main St">
-											</div>
-											<div class="mb-3 col-md-6">
-												<label class="form-label">Price</label>
-												<input type="text" class="form-control" placeholder="Email">
-											</div>
+
+										<div class="form-group mt-3">
+											<label>Waste Name</label>
+											<input type="text" id="wasteName" class="form-control" readonly>
 										</div>
-										<button type="button" class="btn btn-primary">Sign in</button>
+
+										<div class="form-group mt-3">
+											<label>Price (per kg)</label>
+											<input type="number" id="wastePrice" class="form-control">
+										</div>
+
+										<button id="updatePricingBtn" class="btn btn-primary mt-3">Update Price</button>
 									</form>
 								</div>
 							</div>
@@ -255,6 +253,105 @@
 			</div>
 		</div>
 	</div>
+
+	<script>
+		let wastePricingData = []; // Store fetched data globally so we can access it on selection
+
+		document.addEventListener("DOMContentLoaded", function () {
+			fetchWastePricing();
+
+			// Listen for when the admin selects a different waste type
+			document.getElementById('wasteTypeSelector').addEventListener('change', function() {
+				const selectedId = this.value;
+				populateFields(selectedId);
+			});
+
+			// Listen for the update button click
+			document.getElementById('updatePricingBtn').addEventListener('click', updatePricing);
+		});
+
+		// 1. Fetch data from backend and load the dropdown
+		function fetchWastePricing() {
+			fetch('http://localhost:8080/api/admin/waste-pricing', {
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' }
+			})
+					.then(response => {
+						if (!response.ok) throw new Error('Failed to fetch pricing data');
+						return response.json();
+					})
+					.then(data => {
+						wastePricingData = data; // Save to global variable
+						const selector = document.getElementById('wasteTypeSelector');
+
+						selector.innerHTML = '<option value="" disabled selected>Select a Waste Type</option>';
+
+						data.forEach(item => {
+							const option = document.createElement('option');
+							option.value = item.id;
+							option.textContent = item.name;
+							selector.appendChild(option);
+						});
+
+						// If you are using a jQuery select plugin (like selectpicker), refresh it:
+						// $('.default-select').selectpicker('refresh');
+					})
+					.catch(error => console.error('Error:', error));
+		}
+
+		// 2. Populate Name and Price fields based on selection
+		function populateFields(selectedId) {
+			// Find the selected item in our stored data array
+			const selectedItem = wastePricingData.find(item => item.id == selectedId);
+
+			if (selectedItem) {
+				document.getElementById('wasteName').value = selectedItem.name;
+				document.getElementById('wastePrice').value = selectedItem.price;
+			}
+		}
+
+		// 3. Send the updated price to the backend
+		function updatePricing() {
+			const selectedId = document.getElementById('wasteTypeSelector').value;
+			const updatedPrice = document.getElementById('wastePrice').value;
+
+			if (!selectedId) {
+				alert("Please select a waste type first.");
+				return;
+			}
+
+			if (!updatedPrice || updatedPrice <= 0) {
+				alert("Please enter a valid price.");
+				return;
+			}
+
+			const requestData = {
+				price: parseFloat(updatedPrice)
+			};
+
+			fetch(`http://localhost:8080/api/admin/waste-pricing/${selectedId}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(requestData)
+			})
+					.then(response => {
+						if (!response.ok) throw new Error('Failed to update pricing');
+						return response.json();
+					})
+					.then(data => {
+						alert("Pricing updated successfully!");
+						fetchWastePricing(); // Refresh the list to get new data
+
+						// Clear fields
+						document.getElementById('wasteName').value = '';
+						document.getElementById('wastePrice').value = '';
+					})
+					.catch(error => {
+						console.error('Error:', error);
+						alert("Error updating pricing.");
+					});
+		}
+	</script>
 
     <!-- Required vendors -->
     <script src="vendor/global/global.min.js"></script>

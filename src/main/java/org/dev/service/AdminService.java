@@ -233,4 +233,60 @@ public class AdminService {
         }
     }
 
+    // 1. Fetch All Waste Pricing Types
+    public Response getAllWastePricing() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        try {
+            // Check your exact entity name (e.g., WastePricing)
+            java.util.List<org.dev.entity.WastePricing> pricingList =
+                    session.createQuery("FROM WastePricing", org.dev.entity.WastePricing.class).getResultList();
+
+            java.util.List<java.util.Map<String, Object>> responseList = new java.util.ArrayList<>();
+
+            for (org.dev.entity.WastePricing pricing : pricingList) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("id", pricing.getId());
+                // Update getters to match your WastePricing.java entity
+                map.put("name", pricing.getMaterial_type());
+                map.put("price", pricing.getPrice());
+                responseList.add(map);
+            }
+            return Response.ok(responseList).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.serverError().entity("Error fetching waste pricing").build();
+        } finally {
+            session.close();
+        }
+    }
+
+    // 2. Update Waste Pricing
+    public Response updateWastePricing(int id, java.util.Map<String, Object> requestData) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        org.hibernate.Transaction tx = session.beginTransaction();
+        try {
+            org.dev.entity.WastePricing pricing = session.find(org.dev.entity.WastePricing.class, id);
+
+            if (pricing == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Waste type not found").build();
+            }
+
+            // Extract new price from request. Ensure you parse to the correct data type (e.g., Double)
+            if(requestData.get("price") != null) {
+                double newPrice = Double.parseDouble(requestData.get("price").toString());
+                pricing.setPrice(newPrice); // Update setter to match your entity
+            }
+
+            session.update(pricing);
+            tx.commit();
+
+            return Response.ok("{\"message\":\"Pricing updated successfully!\"}").build();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
+            return Response.serverError().entity("Error updating pricing").build();
+        } finally {
+            session.close();
+        }
+    }
 }

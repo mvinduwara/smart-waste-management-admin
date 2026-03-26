@@ -54,4 +54,17 @@ public class AdminController {
     public Response getAllTransactions() {
         return adminService.getAllTransactions();
     }
+
+    @GET
+    @Path("/waste-pricing")
+    public Response getAllWastePricing() {
+        return adminService.getAllWastePricing();
+    }
+
+    @PUT
+    @Path("/waste-pricing/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateWastePricing(@PathParam("id") int id, java.util.Map<String, Object> requestData) {
+        return adminService.updateWastePricing(id, requestData);
+    }
 }
