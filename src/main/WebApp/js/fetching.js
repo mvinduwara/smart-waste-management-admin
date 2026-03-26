@@ -39,3 +39,12 @@ function handleAdminLogin(event) {
             alert('Login Failed: ' + error.message);
         });
 }
+
+function handleLogout(event) {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminId');
+    localStorage.removeItem('adminUsername');
+
+    window.location.href = 'login.html';
+}
