@@ -12,6 +12,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AdminService {
 
@@ -233,7 +234,7 @@ public class AdminService {
         }
     }
 
-    // 1. Fetch All Waste Pricing Types
+    // Fetch All Waste Pricing Types
     public Response getAllWastePricing() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -260,8 +261,8 @@ public class AdminService {
         }
     }
 
-    // 2. Update Waste Pricing
-    public Response updateWastePricing(int id, java.util.Map<String, Object> requestData) {
+    // Update Waste Pricing
+    public Response updateWastePricing(int id, Map<String, Object> requestData) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         org.hibernate.Transaction tx = null;
 
@@ -270,36 +271,27 @@ public class AdminService {
             org.dev.entity.WastePricing pricing = session.find(org.dev.entity.WastePricing.class, id);
 
             if (pricing == null) {
-                // FIX 1: Rollback the transaction before exiting early
                 if (tx != null && tx.isActive()) {
                     tx.rollback();
                 }
-                // Tip: Returning proper JSON since your controller produces APPLICATION_JSON
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("{\"error\":\"Waste type not found\"}").build();
             }
 
-            // Extract new price from request safely
             if (requestData.get("price") != null) {
                 double newPrice = Double.parseDouble(requestData.get("price").toString());
                 pricing.setPrice(newPrice);
             }
 
-            // FIX 2: Removed session.update(pricing);
-            // Hibernate's dirty checking will automatically update the DB on commit.
-
             tx.commit();
 
             return Response.ok("{\"message\":\"Pricing updated successfully!\"}").build();
-
         } catch (Exception e) {
-            // Safe rollback check
             if (tx != null && tx.isActive()) {
                 tx.rollback();
             }
             e.printStackTrace();
-            return Response.serverError()
-                    .entity("{\"error\":\"Error updating pricing\"}").build();
+            return Response.serverError().entity("{\"error\":\"Error updating pricing\"}").build();
         } finally {
             if (session != null && session.isOpen()) {
                 session.close();

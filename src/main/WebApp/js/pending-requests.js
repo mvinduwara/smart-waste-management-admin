@@ -34,7 +34,6 @@ function populatePendingTable(requests) {
 
     tableBody.innerHTML = '';
 
-    // Handle Empty Data State
     if (!requests || requests.length === 0) {
         tableBody.innerHTML = `
             <tr>
@@ -46,14 +45,12 @@ function populatePendingTable(requests) {
     }
 
     requests.forEach((req, index) => {
-        // Format Date
         let formattedDate = 'N/A';
         if(req.createdAt) {
             let dateObj = new Date(req.createdAt);
             formattedDate = dateObj.toLocaleDateString() + " " + dateObj.toLocaleTimeString();
         }
 
-        // Make Coordinates a clickable map link
         let coordinates = (req.latitude && req.longitude)
             ? `<a href="https://maps.google.com/?q=${req.latitude},${req.longitude}" target="_blank" class="text-primary font-weight-bold">View Map <i class="fa fa-external-link"></i></a>`
             : '<span class="text-muted">N/A</span>';
