@@ -263,30 +263,47 @@ public class AdminService {
     // 2. Update Waste Pricing
     public Response updateWastePricing(int id, java.util.Map<String, Object> requestData) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        org.hibernate.Transaction tx = session.beginTransaction();
+        org.hibernate.Transaction tx = null;
+
         try {
+            tx = session.beginTransaction();
             org.dev.entity.WastePricing pricing = session.find(org.dev.entity.WastePricing.class, id);
 
             if (pricing == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Waste type not found").build();
+                // FIX 1: Rollback the transaction before exiting early
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                // Tip: Returning proper JSON since your controller produces APPLICATION_JSON
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("{\"error\":\"Waste type not found\"}").build();
             }
 
-            // Extract new price from request. Ensure you parse to the correct data type (e.g., Double)
-            if(requestData.get("price") != null) {
+            // Extract new price from request safely
+            if (requestData.get("price") != null) {
                 double newPrice = Double.parseDouble(requestData.get("price").toString());
-                pricing.setPrice(newPrice); // Update setter to match your entity
+                pricing.setPrice(newPrice);
             }
 
-            session.update(pricing);
+            // FIX 2: Removed session.update(pricing);
+            // Hibernate's dirty checking will automatically update the DB on commit.
+
             tx.commit();
 
             return Response.ok("{\"message\":\"Pricing updated successfully!\"}").build();
+
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            // Safe rollback check
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
             e.printStackTrace();
-            return Response.serverError().entity("Error updating pricing").build();
+            return Response.serverError()
+                    .entity("{\"error\":\"Error updating pricing\"}").build();
         } finally {
-            session.close();
+            if (session != null && session.isOpen()) {
+                session.close();
+            }
         }
     }
 }
