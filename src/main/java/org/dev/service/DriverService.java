@@ -69,7 +69,6 @@ public class DriverService {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            // We use loggingRequestDTO.getUsername() because that is the field name in your JSON/DTO
             Driver driver = session.createQuery(
                             "FROM Driver d WHERE d.username = :user OR d.contact = :user", Driver.class)
                     .setParameter("user", loggingRequestDTO.getUsername())
@@ -112,9 +111,6 @@ public class DriverService {
 
             existing.setUsername(updated.getUsername());
             existing.setContact(updated.getContact());
-//            existing.setVehicle_type(updated.getVehicle_type());
-//            existing.setVehicle_reg_no(updated.getVehicle_reg_no());
-//            existing.setLicense_number(updated.getLicense_number());
 
             session.merge(existing);
             tx.commit();

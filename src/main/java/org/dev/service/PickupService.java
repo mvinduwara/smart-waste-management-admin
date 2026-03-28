@@ -24,13 +24,11 @@ public class PickupService {
         try {
             transaction = session.beginTransaction();
 
-            // 1. Verify User Exists
             User user = session.find(User.class, dto.getUserId());
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
             }
 
-            // 2. Calculate Estimated Price
             WastePricing pricing = session.createQuery("FROM WastePricing w WHERE w.material_type = :type", WastePricing.class).setParameter("type", dto.getWasteType()).uniqueResultOptional().orElse(null);
 
             double estimatedValue = 0.0;
@@ -43,7 +41,6 @@ public class PickupService {
                 }
             }
 
-            // 3. Build & Save the Entity
             PickupRequest request = new PickupRequest();
             request.setUser(user);
             request.setWaste_type(dto.getWasteType());

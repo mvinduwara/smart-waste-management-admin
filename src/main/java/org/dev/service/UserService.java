@@ -65,21 +65,18 @@ public class UserService {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            // Find user by username or email
             User user = session.createQuery("FROM User u WHERE u.username = :username", User.class)
                     .setParameter("username", loggingRequestDTO.getUsername())
                     .uniqueResultOptional().orElse(null);
 
-            // Check if user exists AND password matches the hashed version
             if (user == null || !BCrypt.checkpw(loggingRequestDTO.getPassword(), user.getPassword())) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
             }
 
-            // Generate JWT Tokens
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setAccessToken(JWTUtil.generateToken(user.getEmail()));
             tokenDTO.setRequestToken(JWTUtil.generateToken(user.getEmail() + "_refresh"));
-            tokenDTO.setId(user.getId()); // <--- ADD THIS LINE
+            tokenDTO.setId(user.getId());
             return Response.status(Response.Status.OK).entity(tokenDTO).build();
         } finally {
             session.close();
