@@ -72,4 +72,10 @@ public class PickupController {
     public Response completeJob(@PathParam("requestId") int requestId, @PathParam("finalAmount") double finalAmount) {
         return pickupService.completePickupRequest(requestId, finalAmount);
     }
+
+    @PUT
+    @Path("/notify-nearby/{requestId}")
+    public Response notifyNearby(@PathParam("requestId") int requestId) {
+        return pickupService.notifyDriverNearby(requestId);
+    }
 }

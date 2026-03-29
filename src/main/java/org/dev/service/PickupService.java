@@ -6,6 +6,7 @@ import org.dev.dto.DriverEarningsDTO;
 import org.dev.dto.PickupRequestDTO;
 import org.dev.dto.SellerHistoryDTO;
 import org.dev.entity.*;
+import org.dev.util.FCMUtil;
 import org.dev.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -186,29 +187,30 @@ public class PickupService {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
+        String targetFcmToken = null;
+        String assignedDriverName = null;
+
         try {
             transaction = session.beginTransaction();
 
             PickupRequest request = session.find(PickupRequest.class, requestId);
-            if (request == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
-            }
-
-            if (!"PENDING".equals(request.getStatus())) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Sorry, this job is no longer available.").build();
-            }
+            if (request == null) return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+            if (!"PENDING".equals(request.getStatus())) return Response.status(Response.Status.BAD_REQUEST).entity("Job no longer available").build();
 
             Driver driver = session.find(Driver.class, driverId);
-            if (driver == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
-            }
+            if (driver == null) return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
 
             request.setDriver(driver);
             request.setStatus("ACCEPTED");
-
             session.merge(request);
+
+            User seller = request.getUser();
+            if (seller != null && seller.getFcm_token() != null) {
+                targetFcmToken = seller.getFcm_token();
+                assignedDriverName = driver.getUsername();
+            }
+
             transaction.commit();
-            return Response.status(Response.Status.OK).entity("Job accepted successfully!").build();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
@@ -216,6 +218,15 @@ public class PickupService {
         } finally {
             session.close();
         }
+
+        if (targetFcmToken != null && !targetFcmToken.isEmpty()) {
+            FCMUtil.initFirebase();
+            String title = "Pickup Accepted!";
+            String body = "Driver " + assignedDriverName + " is on the way to collect your waste.";
+            FCMUtil.sendNotification(targetFcmToken, title, body);
+        }
+
+        return Response.status(Response.Status.OK).entity("Job accepted successfully!").build();
     }
 
     // Active Driver Request
@@ -363,6 +374,37 @@ public class PickupService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching user requests").build();
         } finally {
             session.close();
+        }
+    }
+
+    // New Method in PickupService
+    public Response notifyDriverNearby(int requestId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        String targetFcmToken = null;
+
+        try {
+            PickupRequest request = session.find(PickupRequest.class, requestId);
+            if (request == null) return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+
+            User seller = request.getUser();
+            if (seller != null) {
+                targetFcmToken = seller.getFcm_token();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error").build();
+        } finally {
+            session.close();
+        }
+
+        if (targetFcmToken != null && !targetFcmToken.isEmpty()) {
+            FCMUtil.initFirebase();
+            String title = "Driver Arriving Soon!";
+            String body = "Your driver is nearby. Please have your waste ready for collection.";
+            FCMUtil.sendNotification(targetFcmToken, title, body);
+            return Response.status(Response.Status.OK).entity("Notification sent to seller").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Seller has no FCM token").build();
         }
     }
 }
