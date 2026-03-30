@@ -2,489 +2,431 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-	<!-- PAGE TITLE HERE -->
-	<title>Eco Cycle</title>
+    <!-- PAGE TITLE HERE -->
+    <title>Eco Cycle</title>
 
-	<link href="vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
+    <link href="vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 
 </head>
 
 <body>
-	<div id="main-wrapper">
+<div id="main-wrapper">
+    <div class="nav-header"></div>
 
+    <!-- header -->
+    <div class="header">
+        <div class="header-content">
+            <nav class="navbar navbar-expand">
+                <div class="collapse navbar-collapse justify-content-between">
+                    <div class="header-left"></div>
+                    <div class="header-right d-flex align-items-center">
 
-		<div class="nav-header"></div>
+                        <ul class="navbar-nav">
+                            <li class="nav-item ps-3">
+                                <div class="dropdown header-profile2">
+                                    <a class="nav-link" href="javascript:void(0);" role="button"
+                                       data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="header-info2 d-flex align-items-center">
+                                            <div class="header-media">
+                                                <img src="images/user.jpg" alt="">
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end" style="">
+                                        <div class="card border-0 mb-0">
+                                            <div class="card-header py-2">
+                                                <div class="products">
+                                                    <img src="images/user.jpg" class="avatar avatar-md" alt="">
+                                                    <div>
+                                                        <h6>Hanuman Prajapati</h6>
+                                                        <span>Web Designer</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer px-0 py-2">
 
-		<!-- header -->
-		<div class="header">
-			<div class="header-content">
-				<nav class="navbar navbar-expand">
-					<div class="collapse navbar-collapse justify-content-between">
-						<div class="header-left"></div>
-						<div class="header-right d-flex align-items-center">
+                                                <a href="#" onclick="handleLogout(event)" class="dropdown-item ai-icon">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                         viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
+                                                         stroke-width="2" stroke-linecap="round"
+                                                         stroke-linejoin="round">
+                                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                                        <polyline points="16 17 21 12 16 7"></polyline>
+                                                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                                                    </svg>
+                                                    <span class="ms-2">Logout </span>
+                                                </a>
+                                            </div>
+                                        </div>
 
-							<ul class="navbar-nav">
-								<li class="nav-item ps-3">
-									<div class="dropdown header-profile2">
-										<a class="nav-link" href="javascript:void(0);" role="button"
-											data-bs-toggle="dropdown" aria-expanded="false">
-											<div class="header-info2 d-flex align-items-center">
-												<div class="header-media">
-													<img src="images/user.jpg" alt="">
-												</div>
-											</div>
-										</a>
-										<div class="dropdown-menu dropdown-menu-end" style="">
-											<div class="card border-0 mb-0">
-												<div class="card-header py-2">
-													<div class="products">
-														<img src="images/user.jpg" class="avatar avatar-md" alt="">
-														<div>
-															<h6>Hanuman Prajapati</h6>
-															<span>Web Designer</span>
-														</div>
-													</div>
-												</div>
-												<div class="card-footer px-0 py-2">
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
 
-													<a href="page-login.html" class="dropdown-item ai-icon">
-														<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-															viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
-															stroke-width="2" stroke-linecap="round"
-															stroke-linejoin="round">
-															<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-															<polyline points="16 17 21 12 16 7"></polyline>
-															<line x1="21" y1="12" x2="9" y2="12"></line>
-														</svg>
-														<span class="ms-2">Logout </span>
-													</a>
-												</div>
-											</div>
+    <!-- side bar -->
+    <div class="deznav">
+        <div class="deznav-scroll">
+            <ul class="metismenu" id="menu">
+                <li class="menu-title">YOUR COMPANY</li>
 
-										</div>
-									</div>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</nav>
-			</div>
-		</div>
+                <li><a href="index.html" class="" aria-expanded="false">
+                    <div class="menu-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_113_177)">
+                                <path
+                                        d="M17 4H6C4.79111 4 4 4.7 4 6V18C4 19.3 4.79111 20 6 20H18C19.2 20 20 19.3 20 18V7.20711C20 7.0745 19.9473 6.94732 19.8536 6.85355L17 4ZM17 11H7V4H17V11Z"
+                                        fill="#90959F"/>
+                                <path opacity="0.3"
+                                      d="M14.5 4H12.5C12.2239 4 12 4.22386 12 4.5V8.5C12 8.77614 12.2239 9 12.5 9H14.5C14.7761 9 15 8.77614 15 8.5V4.5C15 4.22386 14.7761 4 14.5 4Z"
+                                      fill="white"/>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_113_177">
+                                    <rect width="24" height="24" fill="white"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span class="nav-text">Home</span>
+                </a>
+                </li>
 
-		<!-- side bar -->
-		<div class="deznav">
-			<div class="deznav-scroll">
-				<ul class="metismenu" id="menu">
-					<li class="menu-title">YOUR COMPANY</li>
+                <li class="menu-title">OUR FEATURES</li>
+                <!-- user manegement -->
+                <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+                    <div class="menu-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g opacity="0.5">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M15.2428 4.73756C15.2428 6.95855 17.0459 8.75902 19.2702 8.75902C19.5151 8.75782 19.7594 8.73431 20 8.68878V16.6615C20 20.0156 18.0215 22 14.6624 22H7.34636C3.97851 22 2 20.0156 2 16.6615V9.3561C2 6.00195 3.97851 4 7.34636 4H15.3131C15.2659 4.243 15.2423 4.49001 15.2428 4.73756ZM13.15 14.8966L16.0078 11.2088V11.1912C16.2525 10.8625 16.1901 10.3989 15.8671 10.1463C15.7108 10.0257 15.5122 9.97345 15.3167 10.0016C15.1211 10.0297 14.9453 10.1358 14.8295 10.2956L12.4201 13.3951L9.6766 11.2351C9.51997 11.1131 9.32071 11.0592 9.12381 11.0856C8.92691 11.1121 8.74898 11.2166 8.63019 11.3756L5.67562 15.1863C5.57177 15.3158 5.51586 15.4771 5.51734 15.6429C5.5002 15.9781 5.71187 16.2826 6.03238 16.3838C6.35288 16.485 6.70138 16.3573 6.88031 16.0732L9.35125 12.8771L12.0948 15.0283C12.2508 15.1541 12.4514 15.2111 12.6504 15.1863C12.8494 15.1615 13.0297 15.0569 13.15 14.8966Z"
+                                      fill="white"/>
+                                <circle opacity="0.4" cx="19.5" cy="4.5" r="2.5" fill="white"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <span class="nav-text">User Management</span>
+                </a>
+                    <ul aria-expanded="false">
+                        <li><a href="seller-list.html">Customers</a></li>
+                        <li><a href="drivers-list.html">Drivers</a></li>
+                    </ul>
+                </li>
 
-					<li><a href="index.html" class="" aria-expanded="false">
-							<div class="menu-icon">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-									<g clip-path="url(#clip0_113_177)">
-										<path
-											d="M17 4H6C4.79111 4 4 4.7 4 6V18C4 19.3 4.79111 20 6 20H18C19.2 20 20 19.3 20 18V7.20711C20 7.0745 19.9473 6.94732 19.8536 6.85355L17 4ZM17 11H7V4H17V11Z"
-											fill="#90959F" />
-										<path opacity="0.3"
-											d="M14.5 4H12.5C12.2239 4 12 4.22386 12 4.5V8.5C12 8.77614 12.2239 9 12.5 9H14.5C14.7761 9 15 8.77614 15 8.5V4.5C15 4.22386 14.7761 4 14.5 4Z"
-											fill="white" />
-									</g>
-									<defs>
-										<clipPath id="clip0_113_177">
-											<rect width="24" height="24" fill="white" />
-										</clipPath>
-									</defs>
-								</svg>
-							</div>
-							<span class="nav-text">Home</span>
-						</a>
-					</li>
+                <!-- payments -->
+                <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+                    <div class="menu-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g opacity="0.5">
+                                <path opacity="0.4"
+                                      d="M10.0833 15.9579H3.50777C2.67555 15.9579 2 16.6217 2 17.4393C2 18.2558 2.67555 18.9206 3.50777 18.9206H10.0833C10.9155 18.9206 11.5911 18.2558 11.5911 17.4393C11.5911 16.6217 10.9155 15.9579 10.0833 15.9579Z"
+                                      fill="white"/>
+                                <path opacity="0.4"
+                                      d="M22 6.37855C22 5.56202 21.3244 4.89832 20.4933 4.89832H13.9178C13.0856 4.89832 12.41 5.56202 12.41 6.37855C12.41 7.19617 13.0856 7.85988 13.9178 7.85988H20.4933C21.3244 7.85988 22 7.19617 22 6.37855Z"
+                                      fill="white"/>
+                                <path
+                                        d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
+                                        fill="white"/>
+                                <path
+                                        d="M22 17.3992C22 19.2648 20.4611 20.7778 18.5611 20.7778C16.6622 20.7778 15.1223 19.2648 15.1223 17.3992C15.1223 15.5325 16.6622 14.0196 18.5611 14.0196C20.4611 14.0196 22 15.5325 22 17.3992Z"
+                                        fill="white"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <span class="nav-text">finanace</span>
+                </a>
+                    <ul aria-expanded="false">
+                        <li><a href="transaction.html">payouts</a></li>
+                        <li><a href="others.html">others</a></li>
+                    </ul>
+                </li>
 
-					<li><a href="project.html" class="" aria-expanded="false">
-							<div class="menu-icon">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-									<g clip-path="url(#clip0_115_172)">
-										<path opacity="0.3" fill-rule="evenodd" clip-rule="evenodd"
-											d="M12 4.25933C12.1489 4.25921 12.3 4.29247 12.4426 4.36281C12.6398 4.46014 12.7994 4.61977 12.8967 4.81698L14.9389 8.95491L19.5054 9.61846C20.0519 9.69788 20.4306 10.2053 20.3512 10.7519C20.3196 10.9695 20.2171 11.1706 20.0596 11.3242L16.7553 14.5451L17.5353 19.0931C17.6287 19.6374 17.2631 20.1544 16.7188 20.2478C16.502 20.2849 16.279 20.2496 16.0844 20.1473L12 18V4.25933Z"
-											fill="#4E5566" />
-										<path fill-rule="evenodd" clip-rule="evenodd"
-											d="M12 4.25933V18L7.91559 20.1473C7.42675 20.4043 6.82212 20.2163 6.56512 19.7275C6.46278 19.5328 6.42746 19.3099 6.46464 19.0931L7.24469 14.5451L3.94036 11.3242C3.54487 10.9387 3.53678 10.3055 3.92228 9.91006C4.07579 9.75258 4.27693 9.65009 4.49457 9.61846L9.06104 8.95492L11.1032 4.81699C11.2773 4.46426 11.6316 4.25961 12 4.25933Z"
-											fill="#90959F" />
-									</g>
-									<defs>
-										<clipPath id="clip0_115_172">
-											<rect width="24" height="24" fill="white" />
-										</clipPath>
-									</defs>
-								</svg>
-							</div>
-							<span class="nav-text">reports</span>
-						</a>
-					</li>
+                <!-- request section -->
+                <li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
+                    <div class="menu-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <g opacity="0.5">
+                                <path opacity="0.4"
+                                      d="M10.0833 15.9579H3.50777C2.67555 15.9579 2 16.6217 2 17.4393C2 18.2558 2.67555 18.9206 3.50777 18.9206H10.0833C10.9155 18.9206 11.5911 18.2558 11.5911 17.4393C11.5911 16.6217 10.9155 15.9579 10.0833 15.9579Z"
+                                      fill="white"/>
+                                <path opacity="0.4"
+                                      d="M22 6.37855C22 5.56202 21.3244 4.89832 20.4933 4.89832H13.9178C13.0856 4.89832 12.41 5.56202 12.41 6.37855C12.41 7.19617 13.0856 7.85988 13.9178 7.85988H20.4933C21.3244 7.85988 22 7.19617 22 6.37855Z"
+                                      fill="white"/>
+                                <path
+                                        d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
+                                        fill="white"/>
+                                <path
+                                        d="M22 17.3992C22 19.2648 20.4611 20.7778 18.5611 20.7778C16.6622 20.7778 15.1223 19.2648 15.1223 17.3992C15.1223 15.5325 16.6622 14.0196 18.5611 14.0196C20.4611 14.0196 22 15.5325 22 17.3992Z"
+                                        fill="white"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <span class="nav-text">Requests</span>
+                </a>
+                    <ul aria-expanded="false">
+                        <li><a href="completed.html">Completed</a></li>
+                        <li><a href="pending.html">Ongoing</a></li>
+                        <li><a href="canceled.html">Cancel</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
 
-					<li class="menu-title">OUR FEATURES</li>
-					<!-- user manegement -->
-					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-							<div class="menu-icon">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-									<g opacity="0.5">
-										<path fill-rule="evenodd" clip-rule="evenodd"
-											d="M15.2428 4.73756C15.2428 6.95855 17.0459 8.75902 19.2702 8.75902C19.5151 8.75782 19.7594 8.73431 20 8.68878V16.6615C20 20.0156 18.0215 22 14.6624 22H7.34636C3.97851 22 2 20.0156 2 16.6615V9.3561C2 6.00195 3.97851 4 7.34636 4H15.3131C15.2659 4.243 15.2423 4.49001 15.2428 4.73756ZM13.15 14.8966L16.0078 11.2088V11.1912C16.2525 10.8625 16.1901 10.3989 15.8671 10.1463C15.7108 10.0257 15.5122 9.97345 15.3167 10.0016C15.1211 10.0297 14.9453 10.1358 14.8295 10.2956L12.4201 13.3951L9.6766 11.2351C9.51997 11.1131 9.32071 11.0592 9.12381 11.0856C8.92691 11.1121 8.74898 11.2166 8.63019 11.3756L5.67562 15.1863C5.57177 15.3158 5.51586 15.4771 5.51734 15.6429C5.5002 15.9781 5.71187 16.2826 6.03238 16.3838C6.35288 16.485 6.70138 16.3573 6.88031 16.0732L9.35125 12.8771L12.0948 15.0283C12.2508 15.1541 12.4514 15.2111 12.6504 15.1863C12.8494 15.1615 13.0297 15.0569 13.15 14.8966Z"
-											fill="white" />
-										<circle opacity="0.4" cx="19.5" cy="4.5" r="2.5" fill="white" />
-									</g>
-								</svg>
-							</div>
-							<span class="nav-text">User Management</span>
-						</a>
-						<ul aria-expanded="false">
-							<li><a href="chart-flot.html">Customers</a></li>
-							<li><a href="chart-morris.html">Drivers</a></li>
-						</ul>
-					</li>
+    <div class="content-body">
+        <div class="container-fluid">
 
-					<!-- payments -->
-					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-							<div class="menu-icon">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-									<g opacity="0.5">
-										<path opacity="0.4"
-											d="M10.0833 15.9579H3.50777C2.67555 15.9579 2 16.6217 2 17.4393C2 18.2558 2.67555 18.9206 3.50777 18.9206H10.0833C10.9155 18.9206 11.5911 18.2558 11.5911 17.4393C11.5911 16.6217 10.9155 15.9579 10.0833 15.9579Z"
-											fill="white" />
-										<path opacity="0.4"
-											d="M22 6.37855C22 5.56202 21.3244 4.89832 20.4933 4.89832H13.9178C13.0856 4.89832 12.41 5.56202 12.41 6.37855C12.41 7.19617 13.0856 7.85988 13.9178 7.85988H20.4933C21.3244 7.85988 22 7.19617 22 6.37855Z"
-											fill="white" />
-										<path
-											d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
-											fill="white" />
-										<path
-											d="M22 17.3992C22 19.2648 20.4611 20.7778 18.5611 20.7778C16.6622 20.7778 15.1223 19.2648 15.1223 17.3992C15.1223 15.5325 16.6622 14.0196 18.5611 14.0196C20.4611 14.0196 22 15.5325 22 17.3992Z"
-											fill="white" />
-									</g>
-								</svg>
-							</div>
-							<span class="nav-text">finanace</span>
-						</a>
-						<ul aria-expanded="false">
-							<li><a href="uc-select2.html">payouts</a></li>
-							<li><a href="uc-nestable.html">others</a></li>
-							<li><a href="uc-noui-slider.html">Cancel</a></li>
-						</ul>
-					</li>
+            <!-- row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Form Validation</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-validation">
+                                <form class="needs-validation" novalidate>
+                                    <div class="row">
+                                        <div class="col-xl-6">
 
-					<!-- request section -->
-					<li><a class="has-arrow " href="javascript:void(0);" aria-expanded="false">
-							<div class="menu-icon">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-									xmlns="http://www.w3.org/2000/svg">
-									<g opacity="0.5">
-										<path opacity="0.4"
-											d="M10.0833 15.9579H3.50777C2.67555 15.9579 2 16.6217 2 17.4393C2 18.2558 2.67555 18.9206 3.50777 18.9206H10.0833C10.9155 18.9206 11.5911 18.2558 11.5911 17.4393C11.5911 16.6217 10.9155 15.9579 10.0833 15.9579Z"
-											fill="white" />
-										<path opacity="0.4"
-											d="M22 6.37855C22 5.56202 21.3244 4.89832 20.4933 4.89832H13.9178C13.0856 4.89832 12.41 5.56202 12.41 6.37855C12.41 7.19617 13.0856 7.85988 13.9178 7.85988H20.4933C21.3244 7.85988 22 7.19617 22 6.37855Z"
-											fill="white" />
-										<path
-											d="M8.87774 6.37856C8.87774 8.24523 7.33886 9.75821 5.43887 9.75821C3.53999 9.75821 2 8.24523 2 6.37856C2 4.51298 3.53999 3 5.43887 3C7.33886 3 8.87774 4.51298 8.87774 6.37856Z"
-											fill="white" />
-										<path
-											d="M22 17.3992C22 19.2648 20.4611 20.7778 18.5611 20.7778C16.6622 20.7778 15.1223 19.2648 15.1223 17.3992C15.1223 15.5325 16.6622 14.0196 18.5611 14.0196C20.4611 14.0196 22 15.5325 22 17.3992Z"
-											fill="white" />
-									</g>
-								</svg>
-							</div>
-							<span class="nav-text">Requests</span>
-						</a>
-						<ul aria-expanded="false">
-							<li><a href="uc-select2.html">Completed</a></li>
-							<li><a href="uc-nestable.html">Ongoing</a></li>
-							<li><a href="uc-noui-slider.html">Cancel</a></li>
-						</ul>
-					</li>
-				</ul>
-			</div>
-		</div>
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom01">Username
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom01"
+                                                           placeholder="Enter a username.." required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a username.
+                                                    </div>
+                                                </div>
+                                            </div>
 
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom02">Contact <span
+                                                        class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom02"
+                                                           placeholder="Your valid email.." required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a Contact.
+                                                    </div>
+                                                </div>
+                                            </div>
 
-		<div class="content-body">
-			<div class="container-fluid">
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom03">Password
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="password" class="form-control"
+                                                           id="validationCustom03" placeholder="Choose a safe one.."
+                                                           required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a password.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
 
-				<!-- row -->
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="card">
-							<div class="card-header">
-								<h4 class="card-title">Form Validation</h4>
-							</div>
-							<div class="card-body">
-								<div class="form-validation">
-									<form class="needs-validation" novalidate>
-										<div class="row">
-											<div class="col-xl-6">
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom01">Username
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom01"
-															placeholder="Enter a username.." required>
-														<div class="invalid-feedback">
-															Please enter a username.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom02">Email <span
-															class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom02"
-															placeholder="Your valid email.." required>
-														<div class="invalid-feedback">
-															Please enter a Email.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom03">Password
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="password" class="form-control"
-															id="validationCustom03" placeholder="Choose a safe one.."
-															required>
-														<div class="invalid-feedback">
-															Please enter a password.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom04">Suggestions <span
-															class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<textarea class="form-control h-50" id="validationCustom04"
-															rows="5" placeholder="What would you like to see?"
-															required></textarea>
-														<div class="invalid-feedback">
-															Please enter a Suggestions.
-														</div>
-													</div>
-												</div>
-											</div>
-											<div class="col-xl-6">
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label" for="validationCustom05">Best
-														Skill
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<select class="default-select wide form-control"
-															id="validationCustom05">
-															<option data-display="Select">Please select</option>
-															<option value="html">HTML</option>
-															<option value="css">CSS</option>
-															<option value="javascript">JavaScript</option>
-															<option value="angular">Angular</option>
-															<option value="angular">React</option>
-															<option value="vuejs">Vue.js</option>
-															<option value="ruby">Ruby</option>
-															<option value="php">PHP</option>
-															<option value="asp">ASP.NET</option>
-															<option value="python">Python</option>
-															<option value="mysql">MySQL</option>
-														</select>
-														<div class="invalid-feedback">
-															Please select a one.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom06">Currency
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom06"
-															placeholder="$21.60" required>
-														<div class="invalid-feedback">
-															Please enter a Currency.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom07">Website
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom07"
-															placeholder="http://example.com" required>
-														<div class="invalid-feedback">
-															Please enter a url.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom08">Phone (US)
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom08"
-															placeholder="212-999-0000" required>
-														<div class="invalid-feedback">
-															Please enter a phone no.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom09">Digits <span
-															class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom09"
-															placeholder="5" required>
-														<div class="invalid-feedback">
-															Please enter a digits.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom10">Number <span
-															class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom10"
-															placeholder="5.0" required>
-														<div class="invalid-feedback">
-															Please enter a num.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"
-														for="validationCustom11">Range [1, 5]
-														<span class="text-danger">*</span>
-													</label>
-													<div class="col-lg-6">
-														<input type="text" class="form-control" id="validationCustom11"
-															placeholder="4" required>
-														<div class="invalid-feedback">
-															Please select a range.
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<label class="col-lg-4 col-form-label"><a
-															href="javascript:void()">Terms &amp; Conditions</a> <span
-															class="text-danger">*</span>
-													</label>
-													<div class="col-lg-8">
-														<div class="form-check">
-															<input class="form-check-input" type="checkbox" value=""
-																id="validationCustom12" required>
-															<label class="form-check-label" for="validationCustom12">
-																Agree to terms and conditions
-															</label>
-														</div>
-													</div>
-												</div>
-												<div class="mb-3 row">
-													<div class="col-lg-8 ms-auto">
-														<button type="submit" class="btn btn-primary">Submit</button>
-													</div>
-												</div>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-lg-12">
-						<div class="card">
-							<div class="card-header">
-								<h4 class="card-title">Vertical Forms with icon</h4>
-							</div>
-							<div class="card-body">
-								<div class="basic-form">
-									<form class="form-valide-with-icon needs-validation" novalidate>
-										<div class="mb-3">
-											<label class="text-label form-label"
-												for="validationCustomUsername">Username</label>
-											<div class="input-group">
-												<span class="input-group-text"> <i class="fa fa-user"></i> </span>
-												<input type="text" class="form-control" id="validationCustomUsername"
-													placeholder="Enter a username.." required>
-												<div class="invalid-feedback">
-													Please Enter a username.
-												</div>
-											</div>
-										</div>
-										<div class="mb-3">
-											<label class="text-label form-label" for="dz-password">Password *</label>
-											<div class="input-group transparent-append">
-												<span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-												<input type="password" class="form-control" id="dz-password"
-													placeholder="Choose a safe one.." required>
-												<span class="input-group-text show-pass">
-													<i class="fa fa-eye-slash"></i>
-													<i class="fa fa-eye"></i>
-												</span>
-												<div class="invalid-feedback">
-													Please Enter a username.
-												</div>
-											</div>
-										</div>
-										<div class="mb-3">
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value=""
-													id="invalidCheck2" required>
-												<label class="form-check-label" for="invalidCheck2">
-													Check Me out
-												</label>
-											</div>
-										</div>
-										<button type="submit" class="btn me-2 btn-primary">Submit</button>
-										<button type="submit" class="btn btn-danger light">Cancel</button>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+                                        <div class="col-xl-6">
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom06">License Number
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom06"
+                                                           placeholder="$21.60" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a License Number.
+                                                    </div>
+                                                </div>
+                                            </div>
 
-		<!-- footer -->
-		<div class="footer">
-			<div class="copyright">
-				<p>Copyright © Developed by <a href="" target="_blank">Codefiline</a> 2026</p>
-			</div>
-		</div>
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom07">Vehicle reg No
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom07"
+                                                           placeholder="http://example.com" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a Vehicle reg No.
+                                                    </div>
+                                                </div>
+                                            </div>
 
-	</div>
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom08">Phone (US)
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom08"
+                                                           placeholder="212-999-0000" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a phone no.
+                                                    </div>
+                                                </div>
+                                            </div>
 
-	<!-- Required vendors -->
-	<script src="vendor/global/global.min.js"></script>
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom09">Vehicle Type <span
+                                                        class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom09"
+                                                           placeholder="5" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a Vehicle Type.
+                                                    </div>
+                                                </div>
+                                            </div>
 
-	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	<script src="js/custom.js"></script>
-	<script src="js/deznav-init.js"></script>
-	<script src="js/demo.js"></script>
+                                            <div class="mb-3 row">
+                                                <label class="col-lg-4 col-form-label"
+                                                       for="validationCustom10">Status <span
+                                                        class="text-danger">*</span>
+                                                </label>
+                                                <div class="col-lg-6">
+                                                    <input type="text" class="form-control" id="validationCustom10"
+                                                           placeholder="5.0" required>
+                                                    <div class="invalid-feedback">
+                                                        Please enter a Status.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3 row">
+                                                <div class="col-lg-8 ms-auto">
+                                                    <button type="button" class="btn btn-primary">Verify</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const driverId = urlParams.get('id');
+
+            if (driverId) {
+                fetchDriverProfile(driverId);
+            } else {
+                alert("No driver ID provided in the URL.");
+            }
+        });
+
+        function fetchDriverProfile(driverId) {
+            fetch(`http://localhost:8080/api/admin/driver/${driverId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to fetch driver details');
+                    return response.json();
+                })
+                .then(driverData => {
+                    // Username
+                    if (document.getElementById('validationCustom01')) {
+                        document.getElementById('validationCustom01').value = driverData.username || '';
+                        document.getElementById('validationCustom01').readOnly = true;
+                    }
+
+                    // Contact / Email (Your label says Contact, but placeholder says Email. Mapping Email here)
+                    if (document.getElementById('validationCustom02')) {
+                        document.getElementById('validationCustom02').value = driverData.email || '';
+                        document.getElementById('validationCustom02').readOnly = true;
+                    }
+
+                    // Password Placeholder
+                    if (document.getElementById('validationCustom03')) {
+                        document.getElementById('validationCustom03').value = '********';
+                        document.getElementById('validationCustom03').readOnly = true;
+                    }
+
+                    // License Number
+                    if (document.getElementById('validationCustom06')) {
+                        document.getElementById('validationCustom06').value = driverData.license_number || '';
+                        document.getElementById('validationCustom06').readOnly = true;
+                    }
+
+                    // Vehicle Reg No
+                    if (document.getElementById('validationCustom07')) {
+                        document.getElementById('validationCustom07').value = driverData.vehicle_reg_no || '';
+                        document.getElementById('validationCustom07').readOnly = true;
+                    }
+
+                    // Phone (Mapping the driver's contact number here)
+                    if (document.getElementById('validationCustom08')) {
+                        document.getElementById('validationCustom08').value = driverData.contact || '';
+                        document.getElementById('validationCustom08').readOnly = true;
+                    }
+
+                    // Vehicle Type
+                    if (document.getElementById('validationCustom09')) {
+                        document.getElementById('validationCustom09').value = driverData.vehicle_type || '';
+                        document.getElementById('validationCustom09').readOnly = true;
+                    }
+
+                    // Status (e.g., Active, Pending)
+                    if (document.getElementById('validationCustom10')) {
+                        document.getElementById('validationCustom10').value = driverData.status || '';
+                        document.getElementById('validationCustom10').readOnly = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Could not load driver profile data.");
+                });
+        }
+    </script>
+
+    <!-- footer -->
+    <div class="footer">
+        <div class="copyright">
+            <p>Copyright © Developed by <a href="" target="_blank">Codefiline</a> 2026</p>
+        </div>
+    </div>
+</div>
+
+<!-- Required vendors -->
+<script src="vendor/global/global.min.js"></script>
+<script src="js/fetching.js"></script>
+<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+<script src="js/custom.js"></script>
+<script src="js/deznav-init.js"></script>
+<script src="js/demo.js"></script>
 </body>
 </html>

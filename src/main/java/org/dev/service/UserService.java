@@ -24,7 +24,14 @@ public class UserService {
         try {
             transaction = session.beginTransaction();
 
-            // Check if email already exists
+            Long usernameCount = session.createQuery("SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class)
+                    .setParameter("username", newUser.getUsername())
+                    .uniqueResult();
+
+            if (usernameCount > 0) {
+                return Response.status(Response.Status.CONFLICT).entity("Username already exists").build();
+            }
+
             Long emailCount = session.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class)
                     .setParameter("email", newUser.getEmail())
                     .uniqueResult();
@@ -41,7 +48,7 @@ public class UserService {
                 return Response.status(Response.Status.CONFLICT).entity("Contact number already exists").build();
             }
 
-            // Hash the password before saving
+            // Hash the password
             String hashedPassword = BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt());
             newUser.setPassword(hashedPassword);
 
@@ -65,21 +72,18 @@ public class UserService {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         try {
-            // Find user by username or email
             User user = session.createQuery("FROM User u WHERE u.username = :username", User.class)
                     .setParameter("username", loggingRequestDTO.getUsername())
                     .uniqueResultOptional().orElse(null);
 
-            // Check if user exists AND password matches the hashed version
             if (user == null || !BCrypt.checkpw(loggingRequestDTO.getPassword(), user.getPassword())) {
                 return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
             }
 
-            // Generate JWT Tokens
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.setAccessToken(JWTUtil.generateToken(user.getEmail()));
             tokenDTO.setRequestToken(JWTUtil.generateToken(user.getEmail() + "_refresh"));
-            tokenDTO.setId(user.getId()); // <--- ADD THIS LINE
+            tokenDTO.setId(user.getId());
             return Response.status(Response.Status.OK).entity(tokenDTO).build();
         } finally {
             session.close();

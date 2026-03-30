@@ -5,10 +5,8 @@ import org.dev.dto.CollectionHistoryDTO;
 import org.dev.dto.DriverEarningsDTO;
 import org.dev.dto.PickupRequestDTO;
 import org.dev.dto.SellerHistoryDTO;
-import org.dev.entity.Driver;
-import org.dev.entity.PickupRequest;
-import org.dev.entity.User;
-import org.dev.entity.WastePricing;
+import org.dev.entity.*;
+import org.dev.util.FCMUtil;
 import org.dev.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -27,13 +25,11 @@ public class PickupService {
         try {
             transaction = session.beginTransaction();
 
-            // 1. Verify User Exists
             User user = session.find(User.class, dto.getUserId());
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("User not found").build();
             }
 
-            // 2. Calculate Estimated Price
             WastePricing pricing = session.createQuery("FROM WastePricing w WHERE w.material_type = :type", WastePricing.class).setParameter("type", dto.getWasteType()).uniqueResultOptional().orElse(null);
 
             double estimatedValue = 0.0;
@@ -46,7 +42,6 @@ public class PickupService {
                 }
             }
 
-            // 3. Build & Save the Entity
             PickupRequest request = new PickupRequest();
             request.setUser(user);
             request.setWaste_type(dto.getWasteType());
@@ -75,7 +70,7 @@ public class PickupService {
         }
     }
 
-    //Get Active Requset Data
+    //Get Active Requests Data
     public Response getActiveRequestByUser(int userId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -114,7 +109,7 @@ public class PickupService {
         }
     }
 
-    //Cancel Requset
+    //Cancel Requests
     public Response cancelPickupRequest(int requestId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -145,7 +140,7 @@ public class PickupService {
         }
     }
 
-    //Available Checkings
+    //Available Checking
     public Response getAvailableRequests() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
@@ -192,29 +187,30 @@ public class PickupService {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
+        String targetFcmToken = null;
+        String assignedDriverName = null;
+
         try {
             transaction = session.beginTransaction();
 
             PickupRequest request = session.find(PickupRequest.class, requestId);
-            if (request == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
-            }
-
-            if (!"PENDING".equals(request.getStatus())) {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Sorry, this job is no longer available.").build();
-            }
+            if (request == null) return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+            if (!"PENDING".equals(request.getStatus())) return Response.status(Response.Status.BAD_REQUEST).entity("Job no longer available").build();
 
             Driver driver = session.find(Driver.class, driverId);
-            if (driver == null) {
-                return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
-            }
+            if (driver == null) return Response.status(Response.Status.NOT_FOUND).entity("Driver not found").build();
 
             request.setDriver(driver);
             request.setStatus("ACCEPTED");
-
             session.merge(request);
+
+            User seller = request.getUser();
+            if (seller != null && seller.getFcm_token() != null) {
+                targetFcmToken = seller.getFcm_token();
+                assignedDriverName = driver.getUsername();
+            }
+
             transaction.commit();
-            return Response.status(Response.Status.OK).entity("Job accepted successfully!").build();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
             e.printStackTrace();
@@ -222,6 +218,15 @@ public class PickupService {
         } finally {
             session.close();
         }
+
+        if (targetFcmToken != null && !targetFcmToken.isEmpty()) {
+            FCMUtil.initFirebase();
+            String title = "Pickup Accepted!";
+            String body = "Driver " + assignedDriverName + " is on the way to collect your waste.";
+            FCMUtil.sendNotification(targetFcmToken, title, body);
+        }
+
+        return Response.status(Response.Status.OK).entity("Job accepted successfully!").build();
     }
 
     // Active Driver Request
@@ -265,21 +270,22 @@ public class PickupService {
                 return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
             }
 
-            // 1. Change status to COMPLETED
+            User seller = request.getUser();
+            double currentBalance = seller.getWalletBalance();
+            seller.setWalletBalance(currentBalance + finalAmount);
+
             request.setStatus("COMPLETED");
             session.merge(request);
+            session.merge(seller);
 
-            // 2. Create Transaction Record with the ACTUAL amount calculated by the driver
-            org.dev.entity.Transactiondto paymentTransaction = new org.dev.entity.Transactiondto();
+            Transactiondto paymentTransaction = new Transactiondto();
             paymentTransaction.setPickupRequest(request);
-            paymentTransaction.setAmount_paid(finalAmount); // <--- Using the dynamic amount
+            paymentTransaction.setAmount_paid(finalAmount);
             paymentTransaction.setPayment_token("TXN_CARD_" + System.currentTimeMillis());
             paymentTransaction.setTimestamp(new java.sql.Timestamp(System.currentTimeMillis()));
 
             session.persist(paymentTransaction);
-
             transaction.commit();
-
             return Response.status(Response.Status.OK).entity("Job successfully completed!").build();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
@@ -368,6 +374,37 @@ public class PickupService {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error fetching user requests").build();
         } finally {
             session.close();
+        }
+    }
+
+    // New Method in PickupService
+    public Response notifyDriverNearby(int requestId) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        String targetFcmToken = null;
+
+        try {
+            PickupRequest request = session.find(PickupRequest.class, requestId);
+            if (request == null) return Response.status(Response.Status.NOT_FOUND).entity("Request not found").build();
+
+            User seller = request.getUser();
+            if (seller != null) {
+                targetFcmToken = seller.getFcm_token();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error").build();
+        } finally {
+            session.close();
+        }
+
+        if (targetFcmToken != null && !targetFcmToken.isEmpty()) {
+            FCMUtil.initFirebase();
+            String title = "Driver Arriving Soon!";
+            String body = "Your driver is nearby. Please have your waste ready for collection.";
+            FCMUtil.sendNotification(targetFcmToken, title, body);
+            return Response.status(Response.Status.OK).entity("Notification sent to seller").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Seller has no FCM token").build();
         }
     }
 }

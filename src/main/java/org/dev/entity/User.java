@@ -24,6 +24,9 @@ public class User implements Serializable {
     @Column(length = 10, nullable = false, unique = true)
     private String contact;
 
+    @Column(name = "wallet_balance", columnDefinition = "DOUBLE DEFAULT 0.0")
+    private double walletBalance = 0.0;
+
     @Column(name = "fcm_token", columnDefinition = "TEXT")
     private String fcm_token;
 
@@ -67,11 +70,13 @@ public class User implements Serializable {
         this.contact = contact;
     }
 
-    public String getFcm_token() {
-        return fcm_token;
-    }
+    public String getFcm_token() { return fcm_token; }
 
     public void setFcm_token(String fcm_token) {
         this.fcm_token = fcm_token;
     }
+
+    public double getWalletBalance() {return walletBalance; }
+
+    public void setWalletBalance(double walletBalance) {this.walletBalance = walletBalance; }
 }

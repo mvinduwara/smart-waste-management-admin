@@ -1,27 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-	<meta charset="utf-8">
+    <meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
 	<!-- PAGE TITLE HERE -->
 	<title>Eco Cycle</title>
 
 	<link href="vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
-	<link href="vendor/swiper/css/swiper-bundle.min.css" rel="stylesheet">
-	<link href="vendor/swiper/css/swiper-bundle.min.css" rel="stylesheet">
-	<link href="vendor/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-	<link href="../../cdn.datatables.net/buttons/1.6.4/css/buttons.dataTables.min.css" rel="stylesheet">
-	<link href="vendor/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-
-	<!-- Style css -->
-	<link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
-
 <body>
-	<div id="main-wrapper">
 
+    <div id="main-wrapper">
 		<div class="nav-header"></div>
 
 		<!-- header -->
@@ -36,7 +27,7 @@
 								<li class="nav-item ps-3">
 									<div class="dropdown header-profile2">
 										<a class="nav-link" href="javascript:void(0);" role="button"
-											data-bs-toggle="dropdown" aria-expanded="false">
+										   data-bs-toggle="dropdown" aria-expanded="false">
 											<div class="header-info2 d-flex align-items-center">
 												<div class="header-media">
 													<img src="images/icons8-person-100.png" alt="">
@@ -55,6 +46,7 @@
 													</div>
 												</div>
 												<div class="card-footer px-0 py-2">
+
 													<a href="#" onclick="handleLogout(event)" class="dropdown-item ai-icon">
 														<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 															 viewBox="0 0 24 24" fill="none" stroke="var(--primary)"
@@ -192,36 +184,44 @@
 			</div>
 		</div>
 
-		<div class="content-body">
+        <div class="content-body">
+            <!-- row -->
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-xl-6 col-xxl-12">
+					<div class="col-xl-6 col-lg-6">
 						<div class="card">
-							<div class="card-body p-0">
-								<div class="table-responsive active-projects">
-									<div class="tbl-caption">
-										<h4 class="heading mb-0">Active Projects</h4>
-									</div>
-									<table class="table table-responsive-md">
-										<thead>
-										<tr>
-											<th><strong>TRANSACTION ID</strong></th>
-											<th><strong>CUSTOMER</strong></th>
-											<th><strong>DATE</strong></th>
-											<th><strong>AMOUNT</strong></th>
-											<th><strong>STATUS</strong></th>
-										</tr>
-										</thead>
-										<tbody id="transactionTableBody">
-										</tbody>
-									</table>
+							<div class="card-header">
+								<h4 class="card-title">Price Listing</h4>
+							</div>
+							<div class="card-body">
+								<div class="basic-form">
+									<form>
+										<div class="form-group">
+											<label>Select Waste Type</label>
+											<select id="wasteTypeSelector" class="form-control default-select">
+												<option value="" disabled selected>Loading...</option>
+											</select>
+										</div>
+
+										<div class="form-group mt-3">
+											<label>Waste Name</label>
+											<input type="text" id="wasteName" class="form-control" readonly>
+										</div>
+
+										<div class="form-group mt-3">
+											<label>Price (per kg)</label>
+											<input type="number" id="wastePrice" class="form-control">
+										</div>
+
+										<button id="updatePricingBtn" class="btn btn-primary mt-3" type="button">Update Price</button>
+									</form>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+            </div>
+        </div>
 
 		<!-- footer -->
 		<div class="footer">
@@ -232,78 +232,108 @@
 	</div>
 
 	<script>
+		let wastePricingData = []; // Store fetched data globally so we can access it on selection
+
 		document.addEventListener("DOMContentLoaded", function () {
-			fetchTransactions();
+			fetchWastePricing();
+
+			// Listen for when the admin selects a different waste type
+			document.getElementById('wasteTypeSelector').addEventListener('change', function() {
+				const selectedId = this.value;
+				populateFields(selectedId);
+			});
+
+			// Listen for the update button click
+			document.getElementById('updatePricingBtn').addEventListener('click', updatePricing);
 		});
 
-		function fetchTransactions() {
-			fetch('http://localhost:8080/api/admin/transactions', {
+		// 1. Fetch data from backend and load the dropdown
+		function fetchWastePricing() {
+			fetch('http://localhost:8080/api/admin/waste-pricing', {
 				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
+				headers: { 'Content-Type': 'application/json' }
 			})
 					.then(response => {
-						if (!response.ok) throw new Error('Network response was not ok');
+						if (!response.ok) throw new Error('Failed to fetch pricing data');
 						return response.json();
 					})
 					.then(data => {
-						const tableBody = document.getElementById('transactionTableBody');
-						tableBody.innerHTML = ''; // Clear out the dummy template data
+						wastePricingData = data; // Save to global variable
+						const selector = document.getElementById('wasteTypeSelector');
+						selector.innerHTML = '<option value="" disabled selected>Select a Waste Type</option>';
 
-						if (data.length === 0) {
-							tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No recent transactions found.</td></tr>';
-							return;
-						}
-
-						data.forEach(tx => {
-							const row = document.createElement('tr');
-
-							// Set Badge Color based on status (Example: Completed = green, Pending = yellow)
-							let badgeClass = 'badge-light';
-							let statusText = tx.status ? tx.status.toLowerCase() : 'unknown';
-
-							if (statusText === 'completed' || statusText === 'success') {
-								badgeClass = 'badge-success';
-							} else if (statusText === 'pending') {
-								badgeClass = 'badge-warning';
-							} else if (statusText === 'canceled' || statusText === 'failed') {
-								badgeClass = 'badge-danger';
-							}
-
-							row.innerHTML = `
-                    <td><strong>#${tx.id || 'N/A'}</strong></td>
-                    <td><div class="d-flex align-items-center"><span class="w-space-no">${tx.customer || 'Customer Name'}</span></div></td>
-                    <td>${tx.date || 'N/A'}</td>
-                    <td><strong>$${tx.amount || '0.00'}</strong></td>
-                    <td><span class="badge light ${badgeClass}">${tx.status || 'N/A'}</span></td>
-                `;
-
-							tableBody.appendChild(row);
+						data.forEach(item => {
+							const option = document.createElement('option');
+							option.value = item.id;
+							option.textContent = item.name;
+							selector.appendChild(option);
 						});
+
+						$('.default-select').selectpicker('refresh');
+					})
+					.catch(error => console.error('Error:', error));
+		}
+
+		// 2. Populate Name and Price fields based on selection
+		function populateFields(selectedId) {
+			// Find the selected item in our stored data array
+			const selectedItem = wastePricingData.find(item => item.id == selectedId);
+
+			if (selectedItem) {
+				document.getElementById('wasteName').value = selectedItem.name;
+				document.getElementById('wastePrice').value = selectedItem.price;
+			}
+		}
+
+		// 3. Send the updated price to the backend
+		function updatePricing() {
+			const selectedId = document.getElementById('wasteTypeSelector').value;
+			const updatedPrice = document.getElementById('wastePrice').value;
+
+			if (!selectedId) {
+				alert("Please select a waste type first.");
+				return;
+			}
+
+			if (!updatedPrice || updatedPrice <= 0) {
+				alert("Please enter a valid price.");
+				return;
+			}
+
+			const requestData = {
+				price: parseFloat(updatedPrice)
+			};
+
+			fetch(`http://localhost:8080/api/admin/waste-pricing/${selectedId}`, {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(requestData)
+			})
+					.then(response => {
+						if (!response.ok) throw new Error('Failed to update pricing');
+						return response.json();
+					})
+					.then(data => {
+						alert("Pricing updated successfully!");
+						fetchWastePricing(); // Refresh the list to get new data
+
+						// Clear fields
+						document.getElementById('wasteName').value = '';
+						document.getElementById('wastePrice').value = '';
 					})
 					.catch(error => {
-						console.error('Error fetching transactions:', error);
+						console.error('Error:', error);
+						alert("Error updating pricing.");
 					});
 		}
 	</script>
 
-	<!-- Required vendors -->
-	<script src="js/fetching.js"></script>
-	<script src="vendor/global/global.min.js"></script>
-	<script src="vendor/chart.js/Chart.bundle.min.js"></script>
+    <!-- Required vendors -->
+    <script src="vendor/global/global.min.js"></script>
 	<script src="vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
-	<script src="vendor/apexchart/apexchart.js"></script>
-
-	<script src="vendor/datatables/js/jquery.dataTables.min.js"></script>
-	<script src="vendor/datatables/js/dataTables.buttons.min.js"></script>
-	<script src="vendor/datatables/js/buttons.html5.min.js"></script>
-	<script src="vendor/datatables/js/jszip.min.js"></script>
-	<script src="js/plugins-init/datatables.init.js"></script>
-
-	<!-- Vectormap -->
-	<script src="js/custom.js"></script>
+    <script src="js/custom.js"></script>
 	<script src="js/deznav-init.js"></script>
+	<script src="js/demo.js"></script>
+    <script src="js/styleSwitcher.js"></script>
 </body>
-
 </html>

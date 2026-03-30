@@ -19,7 +19,7 @@ public class JWTFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext containerRequestContext) throws IOException {
 
         String path = containerRequestContext.getUriInfo().getPath();
-        if (path.startsWith("auth")) {
+        if (path.startsWith("auth") || path.startsWith("admin") ) {
             return;
         }
 
