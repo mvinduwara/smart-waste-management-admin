@@ -24,7 +24,14 @@ public class UserService {
         try {
             transaction = session.beginTransaction();
 
-            // Check if email already exists
+            Long usernameCount = session.createQuery("SELECT COUNT(u) FROM User u WHERE u.username = :username", Long.class)
+                    .setParameter("username", newUser.getUsername())
+                    .uniqueResult();
+
+            if (usernameCount > 0) {
+                return Response.status(Response.Status.CONFLICT).entity("Username already exists").build();
+            }
+
             Long emailCount = session.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class)
                     .setParameter("email", newUser.getEmail())
                     .uniqueResult();
@@ -41,7 +48,7 @@ public class UserService {
                 return Response.status(Response.Status.CONFLICT).entity("Contact number already exists").build();
             }
 
-            // Hash the password before saving
+            // Hash the password
             String hashedPassword = BCrypt.hashpw(newUser.getPassword(), BCrypt.gensalt());
             newUser.setPassword(hashedPassword);
 
