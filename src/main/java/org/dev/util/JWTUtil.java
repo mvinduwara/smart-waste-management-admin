@@ -31,6 +31,6 @@ public class JWTUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
-                .getSubject();    /// email
+                .getSubject();
     }
 }
