@@ -20,7 +20,7 @@ import java.util.List;
 
 public class DriverService {
 
-    // 1. REGISTRATION LOGIC
+    //REGISTRATION LOGIC
     public Response registerDriver(Driver newDriver) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
@@ -64,7 +64,7 @@ public class DriverService {
         }
     }
 
-    // 2. LOGIN LOGIC
+    //LOGIN LOGIC
     public Response validateDriver(LoggingRequestDTO loggingRequestDTO) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -90,7 +90,7 @@ public class DriverService {
         }
     }
 
-    // 2. FETCH PROFILE
+    //FETCH PROFILE
     public Response getDriverProfile(int driverId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Driver driver = session.find(Driver.class, driverId);
@@ -100,7 +100,7 @@ public class DriverService {
         }
     }
 
-    // 3. PROFILE UPDATE LOGIC
+    //PROFILE UPDATE LOGIC
     public Response updateProfile(int id, Driver updated) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = null;
@@ -145,7 +145,7 @@ public class DriverService {
         }
     }
 
-    // Driver Earnings Calculation
+    //Driver Earnings Calculation
     public Response getDriverEarningsSummary(int driverId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
