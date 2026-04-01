@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class UserService {
 
-    // REGISTRATION LOGIC
+    //REGISTRATION LOGIC
     public Response registerUser(User newUser) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
