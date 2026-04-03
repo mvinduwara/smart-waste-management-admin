@@ -198,7 +198,7 @@ public class AdminService {
         }
     }
 
-    // Load All Transactions
+    // Load Transactions
     public Response getAllTransactions() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
