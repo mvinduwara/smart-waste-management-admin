@@ -145,7 +145,7 @@ public class DriverService {
         }
     }
 
-    //Driver Earnings Calculation
+    //Driver Earnings 
     public Response getDriverEarningsSummary(int driverId) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
